@@ -125,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 60,
                       height: 60,
                       decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: const Icon(Icons.skip_previous, size: 40),
+                      child: const Icon(Icons.skip_previous_rounded, size: 40),
                     ),
                   ),
                 ),
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 60,
                       height: 60,
                       decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: const Icon(Icons.skip_next, size: 40),
+                      child: const Icon(Icons.skip_next_rounded, size: 40),
                     ),
                   ),
                 )
