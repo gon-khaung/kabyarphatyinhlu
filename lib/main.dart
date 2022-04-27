@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import 'Widgets/SlidingUpPanel/collapsed_bottom_widget.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -80,6 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       body: SlidingUpPanel(
+        backdropOpacity: 0.1,
+        backdropEnabled: true,
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0),
@@ -96,99 +101,29 @@ class _MyHomePageState extends State<MyHomePage> {
             padding = 100;
           });
         },
-        collapsed: Container(
-          decoration: const BoxDecoration(
-            color: Colors.black12,
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-          ),
-          margin: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {},
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: const Icon(Icons.skip_previous_rounded, size: 40),
-                    ),
-                  ),
-                ),
-
-                // NOTE: Play and Pause button
-                RotationTransition(
-                  turns: const AlwaysStoppedAnimation(45 / 360),
-                  child: Material(
-                    color: Colors.red[500],
-                    shape: ShapeBorder.lerp(
-                      const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                      ),
-                      const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                      ),
-                      0.5,
-                    ),
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: const RotationTransition(
-                          turns: AlwaysStoppedAnimation(-45 / 360),
-                          child: Icon(
-                            Icons.play_arrow,
-                            color: Colors.white,
-                            size: 40,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {},
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: const Icon(Icons.skip_next_rounded, size: 40),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-        panel: Container(
-          color: Colors.transparent,
+        collapsed: const CollapsedBottomWidget(),
+        panel: Padding(
           padding: EdgeInsets.only(top: padding),
           child: Container(
-            color: Colors.black,
-            child: const Center(
-              child: Text("Hi"),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.white,
+            ),
+            child: Column(
+              children: [
+                // swipable panel
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
