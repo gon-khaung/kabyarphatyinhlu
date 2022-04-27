@@ -50,6 +50,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  double padding = 100;
 
   void _incrementCounter() {
     setState(() {
@@ -70,42 +71,132 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          SlidingUpPanel(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0),
-              ),
-            ],
-            color: Colors.white,
-            collapsed: Container(
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(500)),
-              ),
-              margin: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
-              child: const Center(child: Text("Hein")),
-            ),
-            body: Container(
-                child: const Center(
-              child: Text("Hein"),
-            )),
-            panel: Container(
-              child: const Center(
-                child: Text("Hein"),
-              ),
-            ),
-          )
+
+      body: SlidingUpPanel(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0),
+          ),
         ],
+        color: Colors.transparent,
+        onPanelOpened: () {
+          setState(() {
+            padding = 0;
+          });
+        },
+        onPanelClosed: () {
+          setState(() {
+            padding = 100;
+          });
+        },
+        collapsed: Container(
+          decoration: const BoxDecoration(
+            color: Colors.black12,
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+          ),
+          margin: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      child: const Icon(Icons.skip_previous, size: 40),
+                    ),
+                  ),
+                ),
+
+                // NOTE: Play and Pause button
+                RotationTransition(
+                  turns: const AlwaysStoppedAnimation(45 / 360),
+                  child: Material(
+                    color: Colors.red[500],
+                    shape: ShapeBorder.lerp(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                      ),
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                      ),
+                      0.5,
+                    ),
+                    child: InkWell(
+                      onTap: () {},
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: const RotationTransition(
+                          turns: AlwaysStoppedAnimation(-45 / 360),
+                          child: Icon(
+                            Icons.play_arrow,
+                            color: Colors.white,
+                            size: 40,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      child: const Icon(Icons.skip_next, size: 40),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        panel: Container(
+          color: Colors.transparent,
+          padding: EdgeInsets.only(top: padding),
+          child: Container(
+            color: Colors.black,
+            child: const Center(
+              child: Text("Hi"),
+            ),
+          ),
+        ),
+        body: const Center(
+          child: Text('You have pushed the button this many times:'),
+        ),
       ),
+
       // floatingActionButton: FloatingActionButton(
       //   onPressed: _incrementCounter,
       //   tooltip: 'Increment',
