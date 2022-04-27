@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import 'Methods/app_theme.dart';
 import 'Widgets/SlidingUpPanel/collapsed_bottom_widget.dart';
+import 'Widgets/SlidingUpPanel/panel_bottom_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,18 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
+      theme: appTheme(),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -52,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  double padding = 100;
+  // double padding = 100;
 
   void _incrementCounter() {
     setState(() {
@@ -78,13 +69,45 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {},
+                borderRadius: const BorderRadius.all(Radius.circular(50)),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: const Icon(Icons.menu_rounded, size: 30),
+                ),
+              ),
+            ),
+            Material(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(50)),
+              child: InkWell(
+                onTap: () {},
+                borderRadius: const BorderRadius.all(Radius.circular(50)),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: const Icon(Icons.search_rounded, size: 30),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
+      extendBodyBehindAppBar: true,
 
       body: SlidingUpPanel(
         backdropOpacity: 0.1,
         backdropEnabled: true,
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0),
@@ -93,40 +116,16 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.transparent,
         onPanelOpened: () {
           setState(() {
-            padding = 0;
+            // padding = 0;
           });
         },
         onPanelClosed: () {
           setState(() {
-            padding = 100;
+            // padding = 100;
           });
         },
         collapsed: const CollapsedBottomWidget(),
-        panel: Padding(
-          padding: EdgeInsets.only(top: padding),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-            ),
-            child: Column(
-              children: [
-                // swipable panel
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 40,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        panel: const PanelBottomWidget(),
         body: const Center(
           child: Text('You have pushed the button this many times:'),
         ),

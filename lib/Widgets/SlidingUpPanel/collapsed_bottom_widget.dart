@@ -75,7 +75,7 @@ class CollapsedBottomWidget extends StatelessWidget {
                     child: const RotationTransition(
                       turns: AlwaysStoppedAnimation(-45 / 360),
                       child: Icon(
-                        Icons.play_arrow,
+                        Icons.play_arrow_rounded,
                         color: Colors.white,
                         size: 40,
                       ),
