@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:lanpyathu/Methods/colors.dart';
 
 class PanelBottomWidget extends StatefulWidget {
   const PanelBottomWidget({
@@ -110,6 +111,9 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                             ),
                           ),
                         ),
+                        const SizedBox(
+                          width: 20,
+                        ),
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -124,6 +128,9 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                               child: const Icon(Icons.repeat_rounded, size: 30),
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          width: 20,
                         ),
                         Material(
                           color: Colors.transparent,
@@ -140,6 +147,9 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                                   size: 30),
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          width: 20,
                         ),
                         Material(
                           color: Colors.transparent,
@@ -202,6 +212,9 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Slider(
+                              activeColor: MyColor.secondaryColor,
+                              // inactiveColor: MyColor.secondaryColor,
+                              thumbColor: MyColor.primaryColor,
                               value: snapshot.data?.inSeconds.toDouble() ?? 0,
                               onChanged: (value) {
                                 _audioPlayer
@@ -252,7 +265,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                   RotationTransition(
                     turns: const AlwaysStoppedAnimation(45 / 360),
                     child: Material(
-                      color: Colors.red[500],
+                      color: MyColor.primaryColor,
                       shape: ShapeBorder.lerp(
                         const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
