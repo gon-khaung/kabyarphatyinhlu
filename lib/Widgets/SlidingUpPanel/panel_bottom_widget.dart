@@ -285,7 +285,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                               child: RotationTransition(
                                 turns: const AlwaysStoppedAnimation(-45 / 360),
                                 child: Icon(
-                                  playerState!.playing
+                                  playerState?.playing == true
                                       ? Icons.pause_rounded
                                       : Icons.play_arrow_rounded,
                                   color: Colors.white,

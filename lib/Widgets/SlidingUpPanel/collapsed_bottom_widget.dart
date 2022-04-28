@@ -9,7 +9,7 @@ class CollapsedBottomWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.black12,
+        color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(25)),
       ),
       margin: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
