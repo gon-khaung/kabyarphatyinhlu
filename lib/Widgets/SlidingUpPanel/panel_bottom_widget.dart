@@ -181,6 +181,32 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                       ),
                     ),
                   ),
+
+                  // Progress bar of the song with seek bar
+                  Container(
+                      margin: const EdgeInsets.only(top: 30),
+                      child: StreamBuilder<Duration>(
+                        stream: _audioPlayer.positionStream,
+                        builder: (context, snapshot) {
+                          print(_audioPlayer.duration!.inSeconds.toDouble());
+                          if (snapshot.hasData) {
+                            return Slider(
+                              value: snapshot.data!.inSeconds.toDouble(),
+                              onChanged: (value) {
+                                _audioPlayer
+                                    .seek(Duration(seconds: value.toInt()));
+                              },
+                              onChangeEnd: (value) {
+                                _audioPlayer
+                                    .seek(Duration(seconds: value.toInt()));
+                              },
+                              min: 0,
+                              max: _audioPlayer.duration!.inSeconds.toDouble(),
+                            );
+                          }
+                          return Container();
+                        },
+                      )),
                 ],
               ),
             ),
