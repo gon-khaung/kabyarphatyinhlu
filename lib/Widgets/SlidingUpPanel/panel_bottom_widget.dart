@@ -164,20 +164,32 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                     margin: const EdgeInsets.only(top: 30),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text(
-                            "1:22",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "2:20",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      child: StreamBuilder<Duration>(
+                        stream: _audioPlayer.positionStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            var current = snapshot.data!;
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  // NOTE: double to int
+                                  "${current.inMinutes} : ${current.inSeconds % 60}",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "${_audioPlayer.duration!.inMinutes} : ${_audioPlayer.duration!.inSeconds % 60}",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            );
+                          }
+                          return const Text("");
+                        },
                       ),
                     ),
                   ),
@@ -188,10 +200,9 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                       child: StreamBuilder<Duration>(
                         stream: _audioPlayer.positionStream,
                         builder: (context, snapshot) {
-                          print(_audioPlayer.duration!.inSeconds.toDouble());
                           if (snapshot.hasData) {
                             return Slider(
-                              value: snapshot.data!.inSeconds.toDouble(),
+                              value: snapshot.data?.inSeconds.toDouble() ?? 0,
                               onChanged: (value) {
                                 _audioPlayer
                                     .seek(Duration(seconds: value.toInt()));
@@ -201,7 +212,9 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                                     .seek(Duration(seconds: value.toInt()));
                               },
                               min: 0,
-                              max: _audioPlayer.duration!.inSeconds.toDouble(),
+                              max:
+                                  _audioPlayer.duration?.inSeconds.toDouble() ??
+                                      1,
                             );
                           }
                           return Container();
