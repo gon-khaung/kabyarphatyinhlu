@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lanpyathu/blocs/musics/music_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'Methods/app_theme.dart';
@@ -18,7 +20,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: appTheme(),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BlocProvider(
+        create: (context) => MusicBloc()..add(LoadMusics()),
+        child: const MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -106,31 +111,59 @@ class _MyHomePageState extends State<MyHomePage> {
       extendBodyBehindAppBar: true,
 
       body: SlidingUpPanel(
-        backdropOpacity: 0.1,
-        backdropEnabled: true,
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0),
-          ),
-        ],
-        color: Colors.transparent,
-        onPanelOpened: () {
-          setState(() {
-            // padding = 0;
-          });
-        },
-        onPanelClosed: () {
-          setState(() {
-            // padding = 100;
-          });
-        },
-        collapsed: const CollapsedBottomWidget(),
-        panel: const PanelBottomWidget(),
-        body: const Center(
-          child: Text('You have pushed the button this many times:'),
-        ),
-      ),
+          backdropOpacity: 0.1,
+          backdropEnabled: true,
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0),
+            ),
+          ],
+          color: Colors.transparent,
+          onPanelOpened: () {
+            setState(() {
+              // padding = 0;
+            });
+          },
+          onPanelClosed: () {
+            setState(() {
+              // padding = 100;
+            });
+          },
+          collapsed: const CollapsedBottomWidget(),
+          panel: const PanelBottomWidget(),
+          body: Center(
+            child: BlocBuilder(
+              bloc: BlocProvider.of<MusicBloc>(context),
+              builder: (BuildContext context, MusicState state) {
+                if (state is MusicInitial) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is MusicLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is MusicLoaded) {
+                  // ListView of musics
+                  return ListView.builder(
+                    itemCount: state.musics.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(state.musics[index].title),
+                        subtitle: Text(state.musics[index].path),
+                      );
+                    },
+                  );
+                }
+                return const Center(
+                  child: Text('Error'),
+                );
+              },
+            ),
+          )),
 
       // floatingActionButton: FloatingActionButton(
       //   onPressed: _incrementCounter,
