@@ -177,8 +177,10 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                       child: StreamBuilder<Duration>(
                         stream: _audioPlayer.positionStream,
                         builder: (context, snapshot) {
-                          if (snapshot.hasData) {
+                          if (snapshot.hasData &&
+                              _audioPlayer.duration != null) {
                             var current = snapshot.data!;
+
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
