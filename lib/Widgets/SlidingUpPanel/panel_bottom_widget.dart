@@ -23,6 +23,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
     // Set a sequence of audio sources that will be played by the audio player.
     _audioPlayer
         .setAudioSource(ConcatenatingAudioSource(children: [
+      AudioSource.uri(Uri.parse('assets:///src/ghost.mp3')),
       AudioSource.uri(Uri.parse(
           "https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3")),
       AudioSource.uri(Uri.parse(
@@ -34,6 +35,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
       // catch load errors: 404, invalid url ...
       print("An error occured $error");
     });
+    _audioPlayer.setAsset("src/ghost.mp3");
   }
 
   @override
