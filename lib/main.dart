@@ -136,24 +136,93 @@ class _MyHomePageState extends State<MyHomePage> {
             child: BlocBuilder(
               bloc: BlocProvider.of<MusicBloc>(context),
               builder: (BuildContext context, MusicState state) {
-                if (state is MusicInitial) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+                // if (state is MusicInitial) {
+                //   return const Center(
+                //     child: CircularProgressIndicator(),
+                //   );
+                // }
                 if (state is MusicLoading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
                 if (state is MusicLoaded) {
+                  // remove %20 and replace with space and remove .mp3
+
                   // ListView of musics
                   return ListView.builder(
                     itemCount: state.musics.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(state.musics[index].title),
-                        subtitle: Text(state.musics[index].path),
+                      return Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: const Image(
+                                    image: AssetImage(
+                                        "src/Justice_Explicit.webp")),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    state.musics[index].title,
+                                    style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600),
+                                    maxLines: 1,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    state.musics[index].artist,
+                                    style:
+                                        const TextStyle(color: Colors.black87),
+                                    maxLines: 1,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {},
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(50)),
+                                child: Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle),
+                                  child: const Icon(Icons.skip_previous_rounded,
+                                      size: 40),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   );

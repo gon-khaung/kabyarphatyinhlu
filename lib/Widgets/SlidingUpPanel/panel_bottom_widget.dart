@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lanpyathu/Methods/colors.dart';
 import 'package:lanpyathu/Models/music.dart';
+import 'package:lanpyathu/Widgets/page_manager.dart';
 import 'package:lanpyathu/cubit/music_cubit.dart';
 
 class PanelBottomWidget extends StatefulWidget {
@@ -16,12 +17,14 @@ class PanelBottomWidget extends StatefulWidget {
 class _PanelBottomWidgetState extends State<PanelBottomWidget> {
   late AudioPlayer _audioPlayer;
   late bool isPlaying;
+  late PageManager _pageManager;
   late List<Music> musics = [];
 
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
+    _pageManager = PageManager();
 
     final musicCubit = MusicCubit();
     musicCubit.loadMusics();
@@ -322,7 +325,8 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        _audioPlayer.seekToPrevious();
+                        // _audioPlayer.seekToPrevious();
+                        _pageManager.previous();
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(
@@ -352,39 +356,45 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                         ),
                         0.5,
                       ),
-                      child: StreamBuilder<PlayerState>(
-                        stream: _audioPlayer.playerStateStream,
-                        builder: (context, snapshot) {
-                          final playerState = snapshot.data;
-                          return InkWell(
-                            onTap: () {
-                              if (playerState!.playing) {
-                                _audioPlayer.pause();
-                              } else {
-                                _audioPlayer.play();
-                              }
-                            },
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15)),
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: RotationTransition(
-                                turns: const AlwaysStoppedAnimation(-45 / 360),
-                                child: Icon(
-                                  playerState?.playing == true
-                                      ? Icons.pause_rounded
-                                      : Icons.play_arrow_rounded,
-                                  color: Colors.white,
-                                  size: 40,
+                      child: SizedBox(
+                        child: ValueListenableBuilder<ButtonState>(
+                            valueListenable: _pageManager.buttonNotifier,
+                            builder: (_, value, __) {
+                              return InkWell(
+                                onTap: () {
+                                  // if (playerState!.playing) {
+                                  //   _audioPlayer.pause();
+                                  // } else {
+                                  //   _audioPlayer.play();
+                                  // }
+                                  if (value == ButtonState.playing) {
+                                    _pageManager.pause();
+                                  } else {
+                                    _pageManager.play();
+                                  }
+                                },
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: RotationTransition(
+                                    turns:
+                                        const AlwaysStoppedAnimation(-45 / 360),
+                                    child: Icon(
+                                      value == ButtonState.playing
+                                          ? Icons.pause_rounded
+                                          : Icons.play_arrow_rounded,
+                                      color: Colors.white,
+                                      size: 40,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        },
+                              );
+                            }),
                       ),
                     ),
                   ),
@@ -397,7 +407,8 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        _audioPlayer.seekToNext();
+                        // _audioPlayer.seekToNext();
+                        _pageManager.next();
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(

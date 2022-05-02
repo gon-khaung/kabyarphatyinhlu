@@ -27,6 +27,7 @@ class MusicCubit extends Cubit<MusicState> {
         title: path.split('/').last,
         artist: '',
         path: path,
+        id: path.length,
       );
     }).toList()));
   }
