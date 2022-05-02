@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lanpyathu/Methods/colors.dart';
+import 'package:lanpyathu/Models/music.dart';
+import 'package:lanpyathu/cubit/music_cubit.dart';
 
 class PanelBottomWidget extends StatefulWidget {
   const PanelBottomWidget({
@@ -14,28 +16,55 @@ class PanelBottomWidget extends StatefulWidget {
 class _PanelBottomWidgetState extends State<PanelBottomWidget> {
   late AudioPlayer _audioPlayer;
   late bool isPlaying;
+  late List<Music> musics = [];
 
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
 
-    // Set a sequence of audio sources that will be played by the audio player.
-    _audioPlayer
-        .setAudioSource(ConcatenatingAudioSource(children: [
-      AudioSource.uri(Uri.parse('assets:///src/ghost.mp3')),
-      AudioSource.uri(Uri.parse(
-          "https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3")),
-      AudioSource.uri(Uri.parse(
-          "https://archive.org/download/igm-v8_202101/IGM%20-%20Vol.%208/15%20Pokemon%20Red%20-%20Cerulean%20City%20%28Game%20Freak%29.mp3")),
-      // AudioSource.uri(Uri.parse(
-      //     "https://scummbar.com/mi2/MI1-CD/01%20-%20Opening%20Themes%20-%20Introduction.mp3")),
-    ]))
-        .catchError((error) {
-      // catch load errors: 404, invalid url ...
-      print("An error occured $error");
+    final musicCubit = MusicCubit();
+    musicCubit.loadMusics();
+    var state = musicCubit.stream;
+    state.listen((value) {
+      if (value is LoadedMusic) {
+        setState(() {
+          musics = value.musics;
+        });
+        _audioPlayer
+            .setAudioSource(ConcatenatingAudioSource(children: [
+          for (var music in musics)
+            AudioSource.uri(Uri.parse('asset:///src/${music.title}')),
+        ]))
+            .catchError((error) {
+          // catch load errors: 404, invalid url ...
+          print("An error occured $error");
+        });
+      }
     });
-    _audioPlayer.setAsset("src/ghost.mp3");
+
+    print(state);
+
+    // Set a sequence of audio sources that will be played by the audio player.
+    // if (musics.isNotEmpty) {
+    //   _audioPlayer
+    //       .setAudioSource(ConcatenatingAudioSource(children: [
+    //     AudioSource.uri(Uri.parse('asset:///src/ghost.mp3')),
+    //     // AudioSource.uri(Uri.parse(
+    //     //     "https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3")),
+    //     // AudioSource.uri(Uri.parse(
+    //     //     "https://archive.org/download/igm-v8_202101/IGM%20-%20Vol.%208/15%20Pokemon%20Red%20-%20Cerulean%20City%20%28Game%20Freak%29.mp3")),
+    //     // AudioSource.uri(Uri.parse(
+    //     //     "https://scummbar.com/mi2/MI1-CD/01%20-%20Opening%20Themes%20-%20Introduction.mp3")),
+    //     for (var music in musics)
+    //       AudioSource.uri(Uri.parse("asset:///src/${music.title}")),
+    //   ]))
+    //       .catchError((error) {
+    //     // catch load errors: 404, invalid url ...
+    //     print("An error occured $error");
+    //   });
+    // }
+    // _audioPlayer.setAsset("src/ghost.mp3");
   }
 
   @override
@@ -90,6 +119,33 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                           fit: BoxFit.cover),
                     ),
                   ),
+
+                  // NOTE: Title
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    child: StreamBuilder<int?>(
+                      stream: _audioPlayer.currentIndexStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          // get music title from index
+                          var music = musics[snapshot.data!];
+                          return Text(
+                            //  display
+                            music.title
+                                .replaceAll("%20", " ")
+                                .replaceAll(".mp3", ''),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          );
+                        }
+                        return Container();
+                      },
+                    ),
+                  ),
+
                   Container(
                     margin: const EdgeInsets.only(top: 30),
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -118,18 +174,37 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                         ),
                         Material(
                           color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration:
-                                  const BoxDecoration(shape: BoxShape.circle),
-                              child: const Icon(Icons.repeat_rounded, size: 30),
-                            ),
-                          ),
+                          child: StreamBuilder<LoopMode>(
+                              stream: _audioPlayer.loopModeStream,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return InkWell(
+                                    onTap: () {
+                                      _audioPlayer.setLoopMode(
+                                        LoopMode.values[
+                                            (snapshot.data!.index + 1) % 2],
+                                      );
+                                    },
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(50)),
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle),
+                                      child: Icon(
+                                        snapshot.data == LoopMode.off
+                                            ? Icons.repeat
+                                            : snapshot.data == LoopMode.one
+                                                ? Icons.repeat_one_rounded
+                                                : Icons.repeat_rounded,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Container();
+                              }),
                         ),
                         const SizedBox(
                           width: 20,
@@ -210,47 +285,45 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
 
                   // Progress bar of the song with seek bar
                   Container(
-                      margin: const EdgeInsets.only(top: 30),
                       child: StreamBuilder<Duration>(
-                        stream: _audioPlayer.positionStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Slider(
-                              activeColor: MyColor.secondaryColor,
-                              // inactiveColor: MyColor.secondaryColor,
-                              thumbColor: MyColor.primaryColor,
-                              value: snapshot.data?.inSeconds.toDouble() ?? 0,
-                              onChanged: (value) {
-                                _audioPlayer
-                                    .seek(Duration(seconds: value.toInt()));
-                              },
-                              onChangeEnd: (value) {
-                                _audioPlayer
-                                    .seek(Duration(seconds: value.toInt()));
-                              },
-                              min: 0,
-                              max:
-                                  _audioPlayer.duration?.inSeconds.toDouble() ??
-                                      1,
-                            );
-                          }
-                          return Container();
-                        },
-                      )),
+                    stream: _audioPlayer.positionStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Slider(
+                          activeColor: MyColor.secondaryColor,
+                          // inactiveColor: MyColor.secondaryColor,
+                          thumbColor: MyColor.primaryColor,
+                          value: snapshot.data?.inSeconds.toDouble() ?? 0,
+                          onChanged: (value) {
+                            _audioPlayer.seek(Duration(seconds: value.toInt()));
+                          },
+                          onChangeEnd: (value) {
+                            _audioPlayer.seek(Duration(seconds: value.toInt()));
+                          },
+                          min: 0,
+                          max: _audioPlayer.duration?.inSeconds.toDouble() ?? 1,
+                        );
+                      }
+                      return Container();
+                    },
+                  )),
                 ],
               ),
             ),
 
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+              // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              margin: const EdgeInsets.only(bottom: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        _audioPlayer.seekToPrevious();
+                      },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(
                         width: 60,
@@ -323,7 +396,9 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        _audioPlayer.seekToNext();
+                      },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(
                         width: 60,
