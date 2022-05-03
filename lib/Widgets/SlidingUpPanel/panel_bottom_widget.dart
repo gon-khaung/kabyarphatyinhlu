@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lanpyathu/Methods/colors.dart';
 import 'package:lanpyathu/Models/music.dart';
 import 'package:lanpyathu/Widgets/page_manager.dart';
 import 'package:lanpyathu/cubit/music_cubit.dart';
+import 'package:lanpyathu/providers/music_provider.dart';
 
-class PanelBottomWidget extends StatefulWidget {
+class PanelBottomWidget extends ConsumerStatefulWidget {
   const PanelBottomWidget({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<PanelBottomWidget> createState() => _PanelBottomWidgetState();
+  _PanelBottomWidgetState createState() => _PanelBottomWidgetState();
 }
 
-class _PanelBottomWidgetState extends State<PanelBottomWidget> {
+class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
   late AudioPlayer _audioPlayer;
   late bool isPlaying;
   late PageManager _pageManager;
@@ -25,26 +27,28 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
     super.initState();
     _audioPlayer = AudioPlayer();
     _pageManager = PageManager();
+    ref.read(audioPlayerProvider);
 
     final musicCubit = MusicCubit();
     musicCubit.loadMusics();
     var state = musicCubit.stream;
-    state.listen((value) {
-      if (value is LoadedMusic) {
-        setState(() {
-          musics = value.musics;
-        });
-        _audioPlayer
-            .setAudioSource(ConcatenatingAudioSource(children: [
-          for (var music in musics)
-            AudioSource.uri(Uri.parse('asset:///src/${music.title}')),
-        ]))
-            .catchError((error) {
-          // catch load errors: 404, invalid url ...
-          print("An error occured $error");
-        });
-      }
-    });
+
+    // state.listen((value) {
+    //   if (value is LoadedMusic) {
+    //     setState(() {
+    //       musics = value.musics;
+    //     });
+    //     _audioPlayer
+    //         .setAudioSource(ConcatenatingAudioSource(children: [
+    //       for (var music in musics)
+    //         AudioSource.uri(Uri.parse('asset:///src/${music.title}')),
+    //     ]))
+    //         .catchError((error) {
+    //       // catch load errors: 404, invalid url ...
+    //       print("An error occured $error");
+    //     });
+    //   }
+    // });
 
     print(state);
 
@@ -80,6 +84,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final audioPlayer = ref.read(audioPlayerProvider);
     return Padding(
       padding: const EdgeInsets.only(top: 100),
       child: Container(

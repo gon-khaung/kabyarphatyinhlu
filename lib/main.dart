@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:lanpyathu/blocs/musics/music_bloc.dart';
+import 'package:lanpyathu/providers/music_provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'Methods/app_theme.dart';
@@ -9,7 +12,7 @@ import 'Widgets/SlidingUpPanel/collapsed_bottom_widget.dart';
 import 'Widgets/SlidingUpPanel/panel_bottom_widget.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +33,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -45,14 +48,21 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
+class _MyHomePageState extends ConsumerState<MyHomePage>
     with SingleTickerProviderStateMixin {
   int _counter = 0;
   // double padding = 100;
   late final _tabController = TabController(length: 3, vsync: this);
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(playlistProvider);
+    ref.read(audioPlayerProvider);
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -69,6 +79,8 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
+    final playlist = ref.watch(playlistProvider);
+    final audioPlayer = ref.watch(audioPlayerProvider);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -289,122 +301,98 @@ class _MyHomePageState extends State<MyHomePage>
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
-                child: BlocBuilder(
-                  bloc: BlocProvider.of<MusicBloc>(context),
-                  builder: (BuildContext context, MusicState state) {
-                    // if (state is MusicInitial) {
-                    //   return const Center(
-                    //     child: CircularProgressIndicator(),
-                    //   );
-                    // }
-                    if (state is MusicLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (state is MusicLoaded) {
-                      // remove %20 and replace with space and remove .mp3
-
-                      // ListView of musics
-                      return ListView.builder(
-                        itemCount: state.musics.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                BlocProvider.of<MusicBloc>(context).add(
-                                  ChangeActive(
-                                    music: state.musics[index],
-                                    musics: state.musics,
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: state.musics[index].isPlaying
-                                      ? Colors.blue[50]
-                                      : Colors.transparent,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
+                child: ListView.builder(
+                  itemCount: playlist.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          audioPlayer.setAudioSource(
+                            AudioSource.uri(Uri.parse(
+                                'asset:///src/${playlist[index].path}')),
+                          );
+                          if (audioPlayer.playing) {
+                            audioPlayer.pause();
+                          } else {
+                            audioPlayer.play();
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.blue[50],
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: const Image(
+                                      image: AssetImage(
+                                          "src/Justice_Explicit.webp")),
                                 ),
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                child: Row(
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                      width: 50,
-                                      height: 50,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: const Image(
-                                            image: AssetImage(
-                                                "src/Justice_Explicit.webp")),
-                                      ),
+                                    Text(
+                                      playlist[index].title,
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                      maxLines: 1,
                                     ),
                                     const SizedBox(
-                                      width: 10,
+                                      height: 10,
                                     ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            state.musics[index].title,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                            maxLines: 1,
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            state.musics[index].artist,
-                                            style: const TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12),
-                                            maxLines: 1,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: () {},
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(50)),
-                                        child: Container(
-                                          width: 60,
-                                          height: 60,
-                                          decoration: const BoxDecoration(
-                                              shape: BoxShape.circle),
-                                          child: Icon(
-                                              state.musics[index].isPlaying
-                                                  ? Icons.pause_rounded
-                                                  : Icons.play_arrow_rounded,
-                                              size: 27),
-                                        ),
-                                      ),
+                                    Text(
+                                      playlist[index].artist,
+                                      style: const TextStyle(
+                                          color: Colors.black87, fontSize: 12),
+                                      maxLines: 1,
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                    return const Center(
-                      child: Text('Error'),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {},
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(50)),
+                                  child: Container(
+                                    width: 60,
+                                    height: 60,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                        playlist[index].isPlaying
+                                            ? Icons.pause_rounded
+                                            : Icons.play_arrow_rounded,
+                                        size: 27),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),
