@@ -12,7 +12,7 @@ ThemeData appTheme() {
     // Notice that the counter didn't reset back to zero; the application
     // is not restarted.
     primarySwatch: Colors.blue,
-    scaffoldBackgroundColor: Colors.blue[50],
+    scaffoldBackgroundColor: Colors.white,
     appBarTheme: const AppBarTheme(
       color: Colors.transparent,
       elevation: 0,

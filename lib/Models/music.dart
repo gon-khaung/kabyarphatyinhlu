@@ -7,37 +7,52 @@ class Music extends Equatable {
   String title;
   String artist;
   String path;
+  bool isPlaying;
   Music({
     required this.id,
     required this.title,
     required this.artist,
     required this.path,
+    required this.isPlaying,
   });
 
   @override
-  List<Object> get props => [id, title, artist, path];
+  List<Object> get props {
+    return [
+      id,
+      title,
+      artist,
+      path,
+      isPlaying,
+    ];
+  }
 
   Music copyWith({
     int? id,
     String? title,
     String? artist,
     String? path,
+    bool? isPlaying,
   }) {
     return Music(
       id: id ?? this.id,
       title: title ?? this.title,
       artist: artist ?? this.artist,
       path: path ?? this.path,
+      isPlaying: isPlaying ?? this.isPlaying,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'title': title,
-      'artist': artist,
-      'path': path,
-    };
+    final result = <String, dynamic>{};
+
+    result.addAll({'id': id});
+    result.addAll({'title': title});
+    result.addAll({'artist': artist});
+    result.addAll({'path': path});
+    result.addAll({'isPlaying': isPlaying});
+
+    return result;
   }
 
   factory Music.fromMap(Map<String, dynamic> map) {
@@ -46,6 +61,7 @@ class Music extends Equatable {
       title: map['title'] ?? '',
       artist: map['artist'] ?? '',
       path: map['path'] ?? '',
+      isPlaying: map['isPlaying'] ?? false,
     );
   }
 
@@ -55,6 +71,6 @@ class Music extends Equatable {
 
   @override
   String toString() {
-    return 'Music(id: $id, title: $title, artist: $artist, path: $path)';
+    return 'Music(id: $id, title: $title, artist: $artist, path: $path, isPlaying: $isPlaying)';
   }
 }

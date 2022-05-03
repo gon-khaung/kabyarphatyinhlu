@@ -19,3 +19,12 @@ class MusicLoaded extends MusicState {
   @override
   List<Object> get props => [musics];
 }
+
+class ActiveMusic extends MusicState {
+  final Music music;
+
+  const ActiveMusic({required this.music});
+
+  @override
+  List<Object> get props => [music];
+}

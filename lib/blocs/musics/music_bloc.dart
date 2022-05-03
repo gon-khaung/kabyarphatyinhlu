@@ -34,6 +34,7 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
             title: item['title'],
             artist: item['artist'],
             path: item['path'],
+            isPlaying: false,
           );
         }).toList();
 
@@ -58,6 +59,30 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
         //     }).toList(),
         //   ),
         // );
+      }),
+    );
+
+    on<ChangeActive>(
+      ((event, emit) {
+        // check some music is playing or not and change it to false if it is playing and change it to true if it is not playing
+        final Music music = event.music;
+        final List<Music> musics = event.musics;
+        final bool isPlaying = !music.isPlaying;
+        final Music updatedMusic = music.copyWith(isPlaying: isPlaying);
+        emit(
+          MusicLoaded(
+            musics: musics.map((Music music) {
+              return music.id == updatedMusic.id
+                  ? updatedMusic
+                  : music.copyWith(isPlaying: false);
+            }).toList(),
+          ),
+        );
+        emit(
+          ActiveMusic(
+            music: updatedMusic,
+          ),
+        );
       }),
     );
   }

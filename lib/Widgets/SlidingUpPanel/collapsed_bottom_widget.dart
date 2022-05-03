@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:lanpyathu/Widgets/page_manager.dart';
 
-class CollapsedBottomWidget extends StatelessWidget {
+class CollapsedBottomWidget extends StatefulWidget {
   const CollapsedBottomWidget({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<CollapsedBottomWidget> createState() => _CollapsedBottomWidgetState();
+}
+
+class _CollapsedBottomWidgetState extends State<CollapsedBottomWidget> {
+  late PageManager _pageManager;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageManager = PageManager();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(25)),
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: const BorderRadius.all(Radius.circular(25)),
       ),
       margin: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
       child: Padding(
@@ -38,7 +52,9 @@ class CollapsedBottomWidget extends StatelessWidget {
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  _pageManager.previous();
+                },
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
                 child: Container(
                   width: 60,
@@ -53,7 +69,7 @@ class CollapsedBottomWidget extends StatelessWidget {
             RotationTransition(
               turns: const AlwaysStoppedAnimation(45 / 360),
               child: Material(
-                color: Colors.red[500],
+                color: Colors.red[600],
                 shape: ShapeBorder.lerp(
                   const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -63,31 +79,46 @@ class CollapsedBottomWidget extends StatelessWidget {
                   ),
                   0.5,
                 ),
-                child: InkWell(
-                  onTap: () {},
-                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: const RotationTransition(
-                      turns: AlwaysStoppedAnimation(-45 / 360),
-                      child: Icon(
-                        Icons.play_arrow_rounded,
-                        color: Colors.white,
-                        size: 40,
+                child: ValueListenableBuilder<ButtonState>(
+                  valueListenable: _pageManager.buttonNotifier,
+                  builder: (_, value, __) {
+                    return InkWell(
+                      onTap: () {
+                        if (value == ButtonState.playing) {
+                          _pageManager.pause();
+                        } else {
+                          _pageManager.play();
+                        }
+                      },
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: RotationTransition(
+                          turns: const AlwaysStoppedAnimation(-45 / 360),
+                          child: Icon(
+                            value == ButtonState.playing
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            color: Colors.white,
+                            size: 40,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  _pageManager.next();
+                },
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
                 child: Container(
                   width: 60,

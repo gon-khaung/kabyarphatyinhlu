@@ -8,3 +8,13 @@ abstract class MusicEvent extends Equatable {
 }
 
 class LoadMusics extends MusicEvent {}
+
+class ChangeActive extends MusicEvent {
+  final List<Music> musics;
+  final Music music;
+
+  const ChangeActive({required this.musics, required this.music});
+
+  @override
+  List<Object> get props => [musics, music];
+}

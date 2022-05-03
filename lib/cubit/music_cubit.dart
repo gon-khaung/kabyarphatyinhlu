@@ -28,6 +28,7 @@ class MusicCubit extends Cubit<MusicState> {
         artist: '',
         path: path,
         id: path.length,
+        isPlaying: true,
       );
     }).toList()));
   }
