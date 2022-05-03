@@ -4,13 +4,13 @@
 			"id": 1,
 			"title": "Ghost",
 			"artist": "Justin Bieber",
-			"path": "/src/ghost.mp3"
+			"path": "ghost.mp3"
 		},
 		{
 			"id": 2,
 			"title": "Let me down slowly",
 			"artist": "Alec Benjamin",
-			"path": "/src/Alec Benjamin - Let Me Down Slowly.mp3"
+			"path": "Alec Benjamin - Let Me Down Slowly.mp3"
 		}
 	]
 }

@@ -127,7 +127,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                   Container(
                     margin: const EdgeInsets.only(top: 10),
                     child: StreamBuilder<int?>(
-                      stream: _audioPlayer.currentIndexStream,
+                      stream: _pageManager.currentMusicIndex,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // get music title from index
@@ -255,7 +255,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: StreamBuilder<Duration>(
-                        stream: _audioPlayer.positionStream,
+                        stream: _pageManager.currentMusicDurationStream,
                         builder: (context, snapshot) {
                           if (snapshot.hasData &&
                               _audioPlayer.duration != null) {
@@ -289,7 +289,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                   // Progress bar of the song with seek bar
                   Container(
                       child: StreamBuilder<Duration>(
-                    stream: _audioPlayer.positionStream,
+                    stream: _pageManager.currentMusicDurationStream,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Slider(
@@ -298,13 +298,13 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                           thumbColor: MyColor.primaryColor,
                           value: snapshot.data?.inSeconds.toDouble() ?? 0,
                           onChanged: (value) {
-                            _audioPlayer.seek(Duration(seconds: value.toInt()));
+                            _pageManager.seek(Duration(seconds: value.toInt()));
                           },
                           onChangeEnd: (value) {
-                            _audioPlayer.seek(Duration(seconds: value.toInt()));
+                            _pageManager.seek(Duration(seconds: value.toInt()));
                           },
                           min: 0,
-                          max: _audioPlayer.duration?.inSeconds.toDouble() ?? 1,
+                          max: _pageManager.duration?.inSeconds.toDouble() ?? 1,
                         );
                       }
                       return Container();

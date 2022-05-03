@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:lanpyathu/blocs/musics/music_bloc.dart';
 import 'package:lanpyathu/cubit/music_cubit.dart';
 
 class PageManager {
@@ -15,28 +18,58 @@ class PageManager {
   );
   final buttonNotifier = ValueNotifier<ButtonState>(ButtonState.paused);
 
+  final currentMusic = ValueNotifier<int>(0);
+
   late AudioPlayer _audioPlayer;
 
   void _init() async {
     _audioPlayer = AudioPlayer();
     final musicCubit = MusicCubit();
-    musicCubit.loadMusics();
-    var state = musicCubit.stream;
-    state.listen((value) {
-      if (value is LoadedMusic) {
-        var musics = value.musics;
-        _audioPlayer
-            .setAudioSource(ConcatenatingAudioSource(children: [
-          for (var music in musics)
-            AudioSource.uri(Uri.parse('asset:///src/${music.title}')),
-        ]))
-            .catchError((error) {
-          // catch load errors: 404, invalid url ...
-          print("An error occured $error");
-        });
-      }
+    final musicBloc = MusicBloc();
+    musicBloc.add(LoadMusics());
+
+    StreamSubscription musicStream = musicBloc.stream.listen((event) {
+      if (event is LoadMusics) {}
     });
+
+    musicStream.onData((data) {
+      var musicsLoaded = data as MusicLoaded;
+      _audioPlayer
+          .setAudioSource(ConcatenatingAudioSource(children: [
+        for (var music in musicsLoaded.musics)
+          AudioSource.uri(Uri.parse('asset:///src/${music.path}')),
+      ]))
+          .catchError((error) {
+        // catch load errors: 404, invalid url ...
+        print("An error occured $error");
+      });
+    });
+
+    // musicCubit.loadMusics();
+    // var state = musicCubit.stream;
+    // state.listen((value) {
+    //   if (value is LoadedMusic) {
+    //     var musics = value.musics;
+    //     _audioPlayer
+    //         .setAudioSource(ConcatenatingAudioSource(children: [
+    //       for (var music in musics)
+    //         AudioSource.uri(Uri.parse('asset:///src/${music.title}')),
+    //     ]))
+    //         .catchError((error) {
+    //       // catch load errors: 404, invalid url ...
+    //       print("An error occured $error");
+    //     });
+    //   }
+    // });
   }
+
+  // current music duration stream to update progress bar
+  Stream<Duration> get currentMusicDurationStream =>
+      _audioPlayer.positionStream;
+
+  Duration? get duration => _audioPlayer.duration;
+
+  Stream<int?> get currentMusicIndex => _audioPlayer.currentIndexStream;
 
   void play() {
     _audioPlayer.play();
@@ -46,6 +79,7 @@ class PageManager {
   void pause() {
     _audioPlayer.pause();
     buttonNotifier.value = ButtonState.paused;
+    currentMusic.value = _audioPlayer.currentIndex as int;
   }
 
   void next() {
@@ -54,6 +88,10 @@ class PageManager {
 
   void previous() {
     _audioPlayer.seekToPrevious();
+  }
+
+  void seek(Duration position) {
+    _audioPlayer.seek(position);
   }
 }
 
