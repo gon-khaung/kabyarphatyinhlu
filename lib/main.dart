@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage>
                   onTap: () {},
                   leading: const Icon(Icons.account_circle_rounded),
                   title: const Text(
-                    'Artist',
+                    'Poets',
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -252,7 +252,12 @@ class _MyHomePageState extends State<MyHomePage>
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
-              Tab(icon: Icon(Icons.directions_car)),
+              Tab(
+                child: Text(
+                  "Favorites",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
           ),
         ),

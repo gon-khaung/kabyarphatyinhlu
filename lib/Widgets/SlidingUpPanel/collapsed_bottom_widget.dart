@@ -43,8 +43,7 @@ class _CollapsedBottomWidgetState extends State<CollapsedBottomWidget> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50),
                 child: const Image(
-                  image: NetworkImage(
-                      "https://static.toiimg.com/thumb/msid-59174294,imgsize-29115,width-800,height-600,resizemode-75/59174294.jpg"),
+                  image: AssetImage("src/Justice_Explicit.webp"),
                   fit: BoxFit.cover,
                 ),
               ),

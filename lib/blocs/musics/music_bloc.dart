@@ -78,11 +78,6 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
             }).toList(),
           ),
         );
-        emit(
-          ActiveMusic(
-            music: updatedMusic,
-          ),
-        );
       }),
     );
   }

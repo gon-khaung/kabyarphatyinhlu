@@ -117,8 +117,7 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: const Image(
-                          image: NetworkImage(
-                              "https://static.toiimg.com/thumb/msid-59174294,imgsize-29115,width-800,height-600,resizemode-75/59174294.jpg"),
+                          image: AssetImage("src/Justice_Explicit.webp"),
                           fit: BoxFit.cover),
                     ),
                   ),
@@ -231,22 +230,22 @@ class _PanelBottomWidgetState extends State<PanelBottomWidget> {
                         const SizedBox(
                           width: 20,
                         ),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration:
-                                  const BoxDecoration(shape: BoxShape.circle),
-                              child: const Icon(Icons.library_music_rounded,
-                                  size: 30),
-                            ),
-                          ),
-                        ),
+                        // Material(
+                        //   color: Colors.transparent,
+                        //   child: InkWell(
+                        //     onTap: () {},
+                        //     borderRadius:
+                        //         const BorderRadius.all(Radius.circular(50)),
+                        //     child: Container(
+                        //       width: 60,
+                        //       height: 60,
+                        //       decoration:
+                        //           const BoxDecoration(shape: BoxShape.circle),
+                        //       child: const Icon(Icons.library_music_rounded,
+                        //           size: 30),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
