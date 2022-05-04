@@ -52,3 +52,8 @@ final loopStream = StreamProvider.autoDispose<LoopMode>((ref) {
   final audioPlayer = ref.watch(audioPlayerProvider);
   return audioPlayer.loopModeStream;
 });
+
+final currentMusicIndex = StreamProvider.autoDispose<int?>((ref) {
+  final audioPlayer = ref.watch(audioPlayerProvider);
+  return audioPlayer.currentIndexStream;
+});

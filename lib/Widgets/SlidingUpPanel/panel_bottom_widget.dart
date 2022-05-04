@@ -133,12 +133,13 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                       margin: const EdgeInsets.only(top: 10),
                       child: Consumer(
                         builder: (context, ref, child) {
-                          final currentMusicIndex = audioPlayer.currentIndex;
+                          final currentMusic =
+                              ref.watch(currentMusicIndex).value as int;
                           final playlist = ref.watch(playlistProvider);
 
                           return Text(
                             //  display
-                            playlist[currentMusicIndex as int]
+                            playlist[currentMusic]
                                 .title
                                 .replaceAll("%20", " ")
                                 .replaceAll(".mp3", ''),
@@ -361,9 +362,9 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                               //   _audioPlayer.play();
                               // }
                               if (playerState!.playing) {
-                                _pageManager.pause();
+                                audioPlayer.pause();
                               } else {
-                                _pageManager.play();
+                                audioPlayer.play();
                               }
                             },
                             borderRadius:
@@ -400,7 +401,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     child: InkWell(
                       onTap: () {
                         // _audioPlayer.seekToNext();
-                        _pageManager.next();
+                        audioPlayer.seekToNext();
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(
@@ -421,4 +422,5 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
   }
 }
 
+// Return Two Digit String
 String twoDigits(int n) => n.toString().padLeft(2, "0");
