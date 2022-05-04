@@ -85,6 +85,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
   @override
   Widget build(BuildContext context) {
     final audioPlayer = ref.read(audioPlayerProvider);
+
     return Padding(
       padding: const EdgeInsets.only(top: 100),
       child: Container(
@@ -129,16 +130,16 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
 
                   // NOTE: Title
                   Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    child: StreamBuilder<int?>(
-                      stream: audioPlayer.currentIndexStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          // get music title from index
-                          var music = musics[snapshot.data!];
+                      margin: const EdgeInsets.only(top: 10),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final currentMusicIndex = audioPlayer.currentIndex;
+                          final playlist = ref.watch(playlistProvider);
+
                           return Text(
                             //  display
-                            music.title
+                            playlist[currentMusicIndex as int]
+                                .title
                                 .replaceAll("%20", " ")
                                 .replaceAll(".mp3", ''),
                             style: const TextStyle(
@@ -147,11 +148,8 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                               color: Colors.black,
                             ),
                           );
-                        }
-                        return Container();
-                      },
-                    ),
-                  ),
+                        },
+                      )),
 
                   Container(
                     margin: const EdgeInsets.only(top: 30),
@@ -181,37 +179,32 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         ),
                         Material(
                           color: Colors.transparent,
-                          child: StreamBuilder<LoopMode>(
-                              stream: audioPlayer.loopModeStream,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return InkWell(
-                                    onTap: () {
-                                      _audioPlayer.setLoopMode(
-                                        LoopMode.values[
-                                            (snapshot.data!.index + 1) % 2],
-                                      );
-                                    },
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(50)),
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      decoration: const BoxDecoration(
-                                          shape: BoxShape.circle),
-                                      child: Icon(
-                                        snapshot.data == LoopMode.off
-                                            ? Icons.repeat
-                                            : snapshot.data == LoopMode.one
-                                                ? Icons.repeat_one_rounded
-                                                : Icons.repeat_rounded,
-                                        size: 30,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return Container();
-                              }),
+                          child: Consumer(builder: ((context, ref, child) {
+                            final loopMode = ref.watch(loopStream).value;
+                            return InkWell(
+                              onTap: () {
+                                _audioPlayer.setLoopMode(
+                                  LoopMode.values[(loopMode!.index + 1) % 2],
+                                );
+                              },
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(50)),
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration:
+                                    const BoxDecoration(shape: BoxShape.circle),
+                                child: Icon(
+                                  loopMode == LoopMode.off
+                                      ? Icons.repeat
+                                      : loopMode == LoopMode.one
+                                          ? Icons.repeat_one_rounded
+                                          : Icons.repeat_rounded,
+                                  size: 30,
+                                ),
+                              ),
+                            );
+                          })),
                         ),
                         const SizedBox(
                           width: 20,
@@ -254,66 +247,62 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                       ],
                     ),
                   ),
-                  // Container(
-                  //   margin: const EdgeInsets.only(top: 30),
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.symmetric(horizontal: 30),
-                  //     child: StreamBuilder<Duration>(
-                  //       stream: audioPlayer.positionStream,
-                  //       builder: (context, snapshot) {
-                  //         if (snapshot.hasData &&
-                  //             _audioPlayer.duration != null) {
-                  //           var current = snapshot.data!;
+                  Container(
+                    margin: const EdgeInsets.only(top: 30),
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Consumer(
+                          builder: ((context, ref, child) {
+                            final current =
+                                ref.watch(currentPositionStream).value;
 
-                  //           return Row(
-                  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //             children: [
-                  //               Text(
-                  //                 // NOTE: double to int
-                  //                 "${current.inMinutes} : ${current.inSeconds % 60}",
-                  //                 style: const TextStyle(
-                  //                     fontSize: 16,
-                  //                     fontWeight: FontWeight.bold),
-                  //               ),
-                  //               Text(
-                  //                 "${_audioPlayer.duration!.inMinutes} : ${_audioPlayer.duration!.inSeconds % 60}",
-                  //                 style: const TextStyle(
-                  //                     fontSize: 16,
-                  //                     fontWeight: FontWeight.bold),
-                  //               ),
-                  //             ],
-                  //           );
-                  //         }
-                  //         return const Text("");
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  // NOTE: double to int
+                                  "${twoDigits(current!.inMinutes)} : ${twoDigits(current.inSeconds % 60)}",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "${twoDigits(audioPlayer.duration!.inMinutes)} : ${twoDigits(audioPlayer.duration!.inSeconds % 60)}",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            );
+                          }),
+                        )),
+                  ),
 
                   // Progress bar of the song with seek bar
                   Container(
-                      child: StreamBuilder<Duration>(
-                    stream: audioPlayer.positionStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final currentPosition =
+                            ref.watch(currentPositionStream);
                         return Slider(
                           activeColor: MyColor.secondaryColor,
                           // inactiveColor: MyColor.secondaryColor,
                           thumbColor: MyColor.primaryColor,
-                          value: snapshot.data?.inSeconds.toDouble() ?? 0,
+                          value:
+                              currentPosition.value?.inSeconds.toDouble() ?? 0,
                           onChanged: (value) {
-                            _pageManager.seek(Duration(seconds: value.toInt()));
+                            audioPlayer.seek(Duration(seconds: value.toInt()));
                           },
                           onChangeEnd: (value) {
-                            _pageManager.seek(Duration(seconds: value.toInt()));
+                            // _pageManager.seek(Duration(seconds: value.toInt()));
+                            audioPlayer.seek(Duration(seconds: value.toInt()));
                           },
                           min: 0,
-                          max: _pageManager.duration?.inSeconds.toDouble() ?? 1,
+                          max: audioPlayer.duration?.inSeconds.toDouble() ?? 1,
                         );
-                      }
-                      return Container();
-                    },
-                  )),
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -329,8 +318,8 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        // _audioPlayer.seekToPrevious();
-                        _pageManager.previous();
+                        audioPlayer.seekToPrevious();
+                        // _pageManager.previous();
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(
@@ -361,44 +350,43 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         0.5,
                       ),
                       child: SizedBox(
-                        child: ValueListenableBuilder<ButtonState>(
-                            valueListenable: _pageManager.buttonNotifier,
-                            builder: (_, value, __) {
-                              return InkWell(
-                                onTap: () {
-                                  // if (playerState!.playing) {
-                                  //   _audioPlayer.pause();
-                                  // } else {
-                                  //   _audioPlayer.play();
-                                  // }
-                                  if (value == ButtonState.playing) {
-                                    _pageManager.pause();
-                                  } else {
-                                    _pageManager.play();
-                                  }
-                                },
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(15)),
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: RotationTransition(
-                                    turns:
-                                        const AlwaysStoppedAnimation(-45 / 360),
-                                    child: Icon(
-                                      value == ButtonState.playing
-                                          ? Icons.pause_rounded
-                                          : Icons.play_arrow_rounded,
-                                      color: Colors.white,
-                                      size: 40,
-                                    ),
-                                  ),
+                        child: Consumer(builder: ((context, ref, child) {
+                          final playerState = ref.watch(audioPlayerState).value;
+
+                          return InkWell(
+                            onTap: () {
+                              // if (playerState!.playing) {
+                              //   _audioPlayer.pause();
+                              // } else {
+                              //   _audioPlayer.play();
+                              // }
+                              if (playerState!.playing) {
+                                _pageManager.pause();
+                              } else {
+                                _pageManager.play();
+                              }
+                            },
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: RotationTransition(
+                                turns: const AlwaysStoppedAnimation(-45 / 360),
+                                child: Icon(
+                                  playerState!.playing
+                                      ? Icons.pause_rounded
+                                      : Icons.play_arrow_rounded,
+                                  color: Colors.white,
+                                  size: 40,
                                 ),
-                              );
-                            }),
+                              ),
+                            ),
+                          );
+                        })),
                       ),
                     ),
                   ),
@@ -432,3 +420,5 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
     );
   }
 }
+
+String twoDigits(int n) => n.toString().padLeft(2, "0");

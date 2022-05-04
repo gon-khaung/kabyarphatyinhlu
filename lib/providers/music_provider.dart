@@ -42,3 +42,13 @@ final audioPlayerState = StreamProvider.autoDispose<PlayerState>((ref) {
 
   return playerState;
 });
+
+final currentPositionStream = StreamProvider.autoDispose<Duration>((ref) {
+  final audioPlayer = ref.watch(audioPlayerProvider);
+  return audioPlayer.positionStream;
+});
+
+final loopStream = StreamProvider.autoDispose<LoopMode>((ref) {
+  final audioPlayer = ref.watch(audioPlayerProvider);
+  return audioPlayer.loopModeStream;
+});

@@ -103,9 +103,9 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
                         turns: const AlwaysStoppedAnimation(-45 / 360),
                         child: Consumer(
                           builder: (context, ref, child) {
-                            final stream = ref.watch(audioPlayerState);
+                            final playerState = ref.watch(audioPlayerState);
                             return Icon(
-                              stream.value!.playing
+                              playerState.value!.playing
                                   ? Icons.pause_rounded
                                   : Icons.play_arrow_rounded,
                               color: Colors.white,
