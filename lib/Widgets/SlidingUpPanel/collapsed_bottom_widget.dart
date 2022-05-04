@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanpyathu/Widgets/page_manager.dart';
+import 'package:lanpyathu/providers/music_provider.dart';
 
-class CollapsedBottomWidget extends StatefulWidget {
+class CollapsedBottomWidget extends ConsumerStatefulWidget {
   const CollapsedBottomWidget({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<CollapsedBottomWidget> createState() => _CollapsedBottomWidgetState();
+  _CollapsedBottomWidgetState createState() => _CollapsedBottomWidgetState();
 }
 
-class _CollapsedBottomWidgetState extends State<CollapsedBottomWidget> {
+class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
   late PageManager _pageManager;
 
   @override
   void initState() {
     super.initState();
     _pageManager = PageManager();
+    ref.read(audioPlayerProvider);
   }
 
   @override
   Widget build(BuildContext context) {
+    final audioPlayer = ref.watch(audioPlayerProvider);
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.blue[50],
@@ -52,7 +57,7 @@ class _CollapsedBottomWidgetState extends State<CollapsedBottomWidget> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  _pageManager.previous();
+                  audioPlayer.seekToPrevious();
                 },
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
                 child: Container(
@@ -78,37 +83,37 @@ class _CollapsedBottomWidgetState extends State<CollapsedBottomWidget> {
                   ),
                   0.5,
                 ),
-                child: ValueListenableBuilder<ButtonState>(
-                  valueListenable: _pageManager.buttonNotifier,
-                  builder: (_, value, __) {
-                    return InkWell(
-                      onTap: () {
-                        if (value == ButtonState.playing) {
-                          _pageManager.pause();
-                        } else {
-                          _pageManager.play();
-                        }
-                      },
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: RotationTransition(
-                          turns: const AlwaysStoppedAnimation(-45 / 360),
-                          child: Icon(
-                            value == ButtonState.playing
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: Colors.white,
-                            size: 40,
-                          ),
-                        ),
-                      ),
-                    );
+                child: InkWell(
+                  onTap: () {
+                    if (audioPlayer.playing) {
+                      print(audioPlayer.playing);
+                      audioPlayer.pause();
+                    } else {
+                      audioPlayer.play();
+                    }
                   },
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: RotationTransition(
+                        turns: const AlwaysStoppedAnimation(-45 / 360),
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final stream = ref.watch(audioPlayerState);
+                            return Icon(
+                              stream.value!.playing
+                                  ? Icons.pause_rounded
+                                  : Icons.play_arrow_rounded,
+                              color: Colors.white,
+                              size: 40,
+                            );
+                          },
+                        )),
+                  ),
                 ),
               ),
             ),

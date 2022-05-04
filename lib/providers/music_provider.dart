@@ -35,3 +35,10 @@ final audioPlayerProvider = Provider.autoDispose<AudioPlayer>((ref) {
   });
   return audioPlayer;
 });
+
+final audioPlayerState = StreamProvider.autoDispose<PlayerState>((ref) {
+  final audioPlayer = ref.watch(audioPlayerProvider);
+  final playerState = audioPlayer.playerStateStream;
+
+  return playerState;
+});

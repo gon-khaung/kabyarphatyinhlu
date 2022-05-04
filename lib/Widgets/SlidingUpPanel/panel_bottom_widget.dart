@@ -131,7 +131,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                   Container(
                     margin: const EdgeInsets.only(top: 10),
                     child: StreamBuilder<int?>(
-                      stream: _pageManager.currentMusicIndex,
+                      stream: audioPlayer.currentIndexStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // get music title from index
@@ -182,7 +182,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         Material(
                           color: Colors.transparent,
                           child: StreamBuilder<LoopMode>(
-                              stream: _audioPlayer.loopModeStream,
+                              stream: audioPlayer.loopModeStream,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return InkWell(
@@ -254,46 +254,46 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                       ],
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 30),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: StreamBuilder<Duration>(
-                        stream: _pageManager.currentMusicDurationStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData &&
-                              _audioPlayer.duration != null) {
-                            var current = snapshot.data!;
+                  // Container(
+                  //   margin: const EdgeInsets.only(top: 30),
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 30),
+                  //     child: StreamBuilder<Duration>(
+                  //       stream: audioPlayer.positionStream,
+                  //       builder: (context, snapshot) {
+                  //         if (snapshot.hasData &&
+                  //             _audioPlayer.duration != null) {
+                  //           var current = snapshot.data!;
 
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  // NOTE: double to int
-                                  "${current.inMinutes} : ${current.inSeconds % 60}",
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "${_audioPlayer.duration!.inMinutes} : ${_audioPlayer.duration!.inSeconds % 60}",
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            );
-                          }
-                          return const Text("");
-                        },
-                      ),
-                    ),
-                  ),
+                  //           return Row(
+                  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //             children: [
+                  //               Text(
+                  //                 // NOTE: double to int
+                  //                 "${current.inMinutes} : ${current.inSeconds % 60}",
+                  //                 style: const TextStyle(
+                  //                     fontSize: 16,
+                  //                     fontWeight: FontWeight.bold),
+                  //               ),
+                  //               Text(
+                  //                 "${_audioPlayer.duration!.inMinutes} : ${_audioPlayer.duration!.inSeconds % 60}",
+                  //                 style: const TextStyle(
+                  //                     fontSize: 16,
+                  //                     fontWeight: FontWeight.bold),
+                  //               ),
+                  //             ],
+                  //           );
+                  //         }
+                  //         return const Text("");
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
 
                   // Progress bar of the song with seek bar
                   Container(
                       child: StreamBuilder<Duration>(
-                    stream: _pageManager.currentMusicDurationStream,
+                    stream: audioPlayer.positionStream,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Slider(
