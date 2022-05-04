@@ -301,98 +301,118 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
-                child: ListView.builder(
-                  itemCount: playlist.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          audioPlayer.setAudioSource(
-                            AudioSource.uri(Uri.parse(
-                                'asset:///src/${playlist[index].path}')),
-                          );
-                          if (audioPlayer.playing) {
-                            audioPlayer.pause();
-                          } else {
-                            audioPlayer.play();
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.blue[50],
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final currentIndex = ref.watch(currentMusicIndex).value;
+                    final currentPoem = playlist[currentIndex ?? 0];
+
+                    print("currentIndex: $currentIndex");
+
+                    return ListView.builder(
+                      itemCount: playlist.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              audioPlayer.setAudioSource(
+                                AudioSource.uri(Uri.parse(
+                                    'asset:///src/${playlist[index].path}')),
+                              );
+                              if (audioPlayer.playing) {
+                                audioPlayer.pause();
+                              } else {
+                                audioPlayer.play();
+                              }
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: currentPoem.id == playlist[index].id
+                                    ? Colors.blue[50]
+                                    : Colors.transparent,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              padding: const EdgeInsets.all(8.0),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: const Image(
+                                          image: AssetImage(
+                                              "src/Justice_Explicit.webp")),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          playlist[index].title,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          currentIndex.toString(),
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                          maxLines: 1,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          playlist[index].artist,
+                                          style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 12),
+                                          maxLines: 1,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () {},
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(50)),
+                                      child: Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle),
+                                        child: Icon(
+                                            playlist[index].isPlaying
+                                                ? Icons.pause_rounded
+                                                : Icons.play_arrow_rounded,
+                                            size: 27),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          padding: const EdgeInsets.all(8.0),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: const Image(
-                                      image: AssetImage(
-                                          "src/Justice_Explicit.webp")),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      playlist[index].title,
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600),
-                                      maxLines: 1,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      playlist[index].artist,
-                                      style: const TextStyle(
-                                          color: Colors.black87, fontSize: 12),
-                                      maxLines: 1,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () {},
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(50)),
-                                  child: Container(
-                                    width: 60,
-                                    height: 60,
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle),
-                                    child: Icon(
-                                        playlist[index].isPlaying
-                                            ? Icons.pause_rounded
-                                            : Icons.play_arrow_rounded,
-                                        size: 27),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
