@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lanpyathu/Methods/colors.dart';
 import 'package:lanpyathu/Models/music.dart';
-import 'package:lanpyathu/Widgets/page_manager.dart';
-import 'package:lanpyathu/cubit/music_cubit.dart';
 import 'package:lanpyathu/providers/music_provider.dart';
 
 class PanelBottomWidget extends ConsumerStatefulWidget {
@@ -19,19 +17,13 @@ class PanelBottomWidget extends ConsumerStatefulWidget {
 class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
   late AudioPlayer _audioPlayer;
   late bool isPlaying;
-  late PageManager _pageManager;
   late List<Music> musics = [];
 
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
-    _pageManager = PageManager();
     ref.read(audioPlayerProvider);
-
-    final musicCubit = MusicCubit();
-    musicCubit.loadMusics();
-    var state = musicCubit.stream;
 
     // state.listen((value) {
     //   if (value is LoadedMusic) {
@@ -49,8 +41,6 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
     //     });
     //   }
     // });
-
-    print(state);
 
     // Set a sequence of audio sources that will be played by the audio player.
     // if (musics.isNotEmpty) {
@@ -123,7 +113,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: const Image(
-                          image: AssetImage("src/Justice_Explicit.webp"),
+                          image: AssetImage("src/images/Justice_Explicit.webp"),
                           fit: BoxFit.cover),
                     ),
                   ),

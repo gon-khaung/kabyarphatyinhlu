@@ -7,13 +7,13 @@ class Music extends Equatable {
   String title;
   String artist;
   String path;
-  bool isPlaying;
+  String cover;
   Music({
     required this.id,
     required this.title,
     required this.artist,
     required this.path,
-    required this.isPlaying,
+    required this.cover,
   });
 
   @override
@@ -23,7 +23,7 @@ class Music extends Equatable {
       title,
       artist,
       path,
-      isPlaying,
+      cover,
     ];
   }
 
@@ -32,14 +32,14 @@ class Music extends Equatable {
     String? title,
     String? artist,
     String? path,
-    bool? isPlaying,
+    String? cover,
   }) {
     return Music(
       id: id ?? this.id,
       title: title ?? this.title,
       artist: artist ?? this.artist,
       path: path ?? this.path,
-      isPlaying: isPlaying ?? this.isPlaying,
+      cover: cover ?? this.cover,
     );
   }
 
@@ -50,7 +50,7 @@ class Music extends Equatable {
     result.addAll({'title': title});
     result.addAll({'artist': artist});
     result.addAll({'path': path});
-    result.addAll({'isPlaying': isPlaying});
+    result.addAll({'cover': cover});
 
     return result;
   }
@@ -61,7 +61,7 @@ class Music extends Equatable {
       title: map['title'] ?? '',
       artist: map['artist'] ?? '',
       path: map['path'] ?? '',
-      isPlaying: map['isPlaying'] ?? false,
+      cover: map['cover'] ?? '',
     );
   }
 
@@ -71,6 +71,6 @@ class Music extends Equatable {
 
   @override
   String toString() {
-    return 'Music(id: $id, title: $title, artist: $artist, path: $path, isPlaying: $isPlaying)';
+    return 'Music(id: $id, title: $title, artist: $artist, path: $path, cover: $cover)';
   }
 }

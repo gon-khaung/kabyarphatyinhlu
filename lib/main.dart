@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lanpyathu/blocs/musics/music_bloc.dart';
+import 'package:lanpyathu/Models/music.dart';
 import 'package:lanpyathu/providers/music_provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -23,10 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: appTheme(),
-      home: BlocProvider(
-        create: (context) => MusicBloc()..add(LoadMusics()),
-        child: const MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -307,10 +303,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                     final currentSequence =
                         ref.watch(currentSequenceStream).value;
 
-                    final currentPoet =
-                        currentSequence?.currentSource?.tag ?? 0;
+                    if (currentSequence?.sequence.isEmpty ?? true) {
+                      return const SizedBox();
+                    }
 
-                    print("currentIndex: $currentSequence");
+                    final currentPoet =
+                        currentSequence!.currentSource!.tag as Music;
 
                     return ListView.builder(
                       itemCount: playlist.length,
@@ -324,7 +322,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: currentPoet == playlist[index].id
+                                color: currentPoet.id == playlist[index].id
                                     ? Colors.blue[50]
                                     : Colors.transparent,
                                 borderRadius: const BorderRadius.all(
@@ -341,9 +339,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                                     height: 50,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      child: const Image(
-                                          image: AssetImage(
-                                              "src/Justice_Explicit.webp")),
+                                      child: Image(
+                                        image: AssetImage(currentPoet.cover),
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(

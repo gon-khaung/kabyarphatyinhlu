@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lanpyathu/Widgets/page_manager.dart';
+import 'package:lanpyathu/Models/music.dart';
 import 'package:lanpyathu/providers/music_provider.dart';
 
 class CollapsedBottomWidget extends ConsumerStatefulWidget {
@@ -13,18 +13,21 @@ class CollapsedBottomWidget extends ConsumerStatefulWidget {
 }
 
 class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
-  late PageManager _pageManager;
-
   @override
   void initState() {
     super.initState();
-    _pageManager = PageManager();
     ref.read(audioPlayerProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     final audioPlayer = ref.watch(audioPlayerProvider);
+    final currentSequence = ref.watch(currentSequenceStream).value;
+
+    if (currentSequence?.sequence.isEmpty ?? true) {
+      return const SizedBox();
+    }
+    final currentPoet = currentSequence!.currentSource!.tag as Music;
 
     return Container(
       decoration: BoxDecoration(
@@ -47,8 +50,8 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50),
-                child: const Image(
-                  image: AssetImage("src/Justice_Explicit.webp"),
+                child: Image(
+                  image: AssetImage(currentPoet.cover),
                   fit: BoxFit.cover,
                 ),
               ),

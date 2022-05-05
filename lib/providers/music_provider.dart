@@ -5,18 +5,17 @@ import 'package:lanpyathu/Models/music.dart';
 final playlistProvider = Provider(
   (ref) => [
     Music(
-      id: 1,
-      title: "Ghost",
-      artist: "Justin B",
-      path: "ghost.mp3",
-      isPlaying: false,
-    ),
+        id: 1,
+        title: "Ghost",
+        artist: "Justin B",
+        path: "ghost.mp3",
+        cover: "src/images/Justice_Explicit.webp"),
     Music(
       id: 2,
       title: "Let Me Down Slowly",
       artist: "Alec Benjamin",
       path: "Alec Benjamin - Let Me Down Slowly.mp3",
-      isPlaying: false,
+      cover: "src/images/Justice_Explicit.webp",
     ),
   ],
 );
@@ -28,9 +27,17 @@ final audioPlayerProvider = Provider.autoDispose<AudioPlayer>((ref) {
       .setAudioSource(
     ConcatenatingAudioSource(children: [
       for (var music in playlist)
-        AudioSource.uri(Uri.parse('asset:///src/${music.path}'), tag: music.id),
+        AudioSource.uri(
+          Uri.parse('asset:///src/poems/${music.path}'),
+          tag: Music(
+            id: music.id,
+            title: music.title,
+            artist: music.artist,
+            path: music.path,
+            cover: music.cover,
+          ),
+        ),
     ]),
-    initialIndex: null,
   )
       .catchError((error) {
     // catch load errors: 404, invalid url ...
