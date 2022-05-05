@@ -86,7 +86,6 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
                 child: InkWell(
                   onTap: () {
                     if (audioPlayer.playing) {
-                      print(audioPlayer.playing);
                       audioPlayer.pause();
                     } else {
                       audioPlayer.play();
@@ -100,19 +99,20 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
                       shape: BoxShape.circle,
                     ),
                     child: RotationTransition(
-                        turns: const AlwaysStoppedAnimation(-45 / 360),
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            final playerState = ref.watch(audioPlayerState);
-                            return Icon(
-                              playerState.value!.playing
+                      turns: const AlwaysStoppedAnimation(-45 / 360),
+                      child: Consumer(builder: (context, ref, child) {
+                        final playerState = ref.watch(audioPlayerState).value;
+                        return Icon(
+                          playerState != null
+                              ? playerState.playing
                                   ? Icons.pause_rounded
-                                  : Icons.play_arrow_rounded,
-                              color: Colors.white,
-                              size: 40,
-                            );
-                          },
-                        )),
+                                  : Icons.play_arrow_rounded
+                              : Icons.play_arrow_rounded,
+                          color: Colors.white,
+                          size: 40,
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ),
@@ -121,7 +121,7 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  _pageManager.next();
+                  audioPlayer.seekToNext();
                 },
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
                 child: Container(

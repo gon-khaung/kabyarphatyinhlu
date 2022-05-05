@@ -130,27 +130,28 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
 
                   // NOTE: Title
                   Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: Consumer(
-                        builder: (context, ref, child) {
-                          final currentMusic =
-                              ref.watch(currentMusicIndex).value as int;
-                          final playlist = ref.watch(playlistProvider);
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final currentMusic =
+                            ref.watch(currentMusicIndex).value ?? 0;
+                        final playlist = ref.watch(playlistProvider);
 
-                          return Text(
-                            //  display
-                            playlist[currentMusic]
-                                .title
-                                .replaceAll("%20", " ")
-                                .replaceAll(".mp3", ''),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          );
-                        },
-                      )),
+                        return Text(
+                          //  display
+                          playlist[currentMusic]
+                              .title
+                              .replaceAll("%20", " ")
+                              .replaceAll(".mp3", ''),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
 
                   Container(
                     margin: const EdgeInsets.only(top: 30),
@@ -181,11 +182,12 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         Material(
                           color: Colors.transparent,
                           child: Consumer(builder: ((context, ref, child) {
-                            final loopMode = ref.watch(loopStream).value;
+                            final loopMode =
+                                ref.watch(loopStream).value ?? LoopMode.off;
                             return InkWell(
                               onTap: () {
-                                _audioPlayer.setLoopMode(
-                                  LoopMode.values[(loopMode!.index + 1) % 2],
+                                audioPlayer.setLoopMode(
+                                  LoopMode.values[(loopMode.index + 1) % 2],
                                 );
                               },
                               borderRadius:
@@ -255,20 +257,21 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         child: Consumer(
                           builder: ((context, ref, child) {
                             final current =
-                                ref.watch(currentPositionStream).value;
+                                ref.watch(currentPositionStream).value ??
+                                    Duration.zero;
 
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   // NOTE: double to int
-                                  "${twoDigits(current!.inMinutes)} : ${twoDigits(current.inSeconds % 60)}",
+                                  "${twoDigits(current.inMinutes)} : ${twoDigits(current.inSeconds % 60)}",
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  "${twoDigits(audioPlayer.duration!.inMinutes)} : ${twoDigits(audioPlayer.duration!.inSeconds % 60)}",
+                                  "${twoDigits(audioPlayer.duration != null ? audioPlayer.duration!.inMinutes : 00)} : ${twoDigits(audioPlayer.duration != null ? audioPlayer.duration!.inSeconds % 60 : 00)}",
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -284,13 +287,14 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     child: Consumer(
                       builder: (context, ref, child) {
                         final currentPosition =
-                            ref.watch(currentPositionStream);
+                            ref.watch(currentPositionStream).value ??
+                                Duration.zero;
+
                         return Slider(
                           activeColor: MyColor.secondaryColor,
                           // inactiveColor: MyColor.secondaryColor,
                           thumbColor: MyColor.primaryColor,
-                          value:
-                              currentPosition.value?.inSeconds.toDouble() ?? 0,
+                          value: currentPosition.inSeconds.toDouble(),
                           onChanged: (value) {
                             audioPlayer.seek(Duration(seconds: value.toInt()));
                           },
@@ -299,7 +303,9 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                             audioPlayer.seek(Duration(seconds: value.toInt()));
                           },
                           min: 0,
-                          max: audioPlayer.duration?.inSeconds.toDouble() ?? 1,
+                          max: audioPlayer.duration != null
+                              ? audioPlayer.duration!.inSeconds.toDouble()
+                              : 0,
                         );
                       },
                     ),
@@ -351,43 +357,47 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         0.5,
                       ),
                       child: SizedBox(
-                        child: Consumer(builder: ((context, ref, child) {
-                          final playerState = ref.watch(audioPlayerState).value;
-
-                          return InkWell(
-                            onTap: () {
-                              // if (playerState!.playing) {
-                              //   _audioPlayer.pause();
-                              // } else {
-                              //   _audioPlayer.play();
-                              // }
-                              if (playerState!.playing) {
-                                audioPlayer.pause();
-                              } else {
-                                audioPlayer.play();
-                              }
-                            },
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15)),
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: RotationTransition(
-                                turns: const AlwaysStoppedAnimation(-45 / 360),
-                                child: Icon(
-                                  playerState!.playing
-                                      ? Icons.pause_rounded
-                                      : Icons.play_arrow_rounded,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
+                        child: InkWell(
+                          onTap: () {
+                            // if (playerState!.playing) {
+                            //   _audioPlayer.pause();
+                            // } else {
+                            //   _audioPlayer.play();
+                            // }
+                            if (audioPlayer.playing) {
+                              audioPlayer.pause();
+                            } else {
+                              audioPlayer.play();
+                            }
+                          },
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15)),
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: RotationTransition(
+                              turns: const AlwaysStoppedAnimation(-45 / 360),
+                              child: Consumer(
+                                builder: (context, ref, child) {
+                                  final playerState =
+                                      ref.watch(audioPlayerState).value;
+                                  return Icon(
+                                    playerState != null
+                                        ? playerState.playing
+                                            ? Icons.pause_rounded
+                                            : Icons.play_arrow_rounded
+                                        : Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 40,
+                                  );
+                                },
                               ),
                             ),
-                          );
-                        })),
+                          ),
+                        ),
                       ),
                     ),
                   ),

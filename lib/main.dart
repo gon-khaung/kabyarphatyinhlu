@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:lanpyathu/blocs/musics/music_bloc.dart';
 import 'package:lanpyathu/providers/music_provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -303,10 +302,15 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final currentIndex = ref.watch(currentMusicIndex).value;
-                    final currentPoem = playlist[currentIndex ?? 0];
+                    final currentIndex =
+                        ref.watch(currentMusicIndex).value ?? 0;
+                    final currentSequence =
+                        ref.watch(currentSequenceStream).value;
 
-                    print("currentIndex: $currentIndex");
+                    final currentPoet =
+                        currentSequence?.currentSource?.tag ?? 0;
+
+                    print("currentIndex: $currentSequence");
 
                     return ListView.builder(
                       itemCount: playlist.length,
@@ -315,19 +319,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              audioPlayer.setAudioSource(
-                                AudioSource.uri(Uri.parse(
-                                    'asset:///src/${playlist[index].path}')),
-                              );
-                              if (audioPlayer.playing) {
-                                audioPlayer.pause();
-                              } else {
-                                audioPlayer.play();
-                              }
+                              audioPlayer.seek(Duration.zero, index: index);
+                              // audioPlayer.play();
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: currentPoem.id == playlist[index].id
+                                color: currentPoet == playlist[index].id
                                     ? Colors.blue[50]
                                     : Colors.transparent,
                                 borderRadius: const BorderRadius.all(
@@ -364,22 +361,15 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Text(
-                                          currentIndex.toString(),
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600),
-                                          maxLines: 1,
-                                        ),
                                         const SizedBox(
                                           height: 10,
                                         ),
                                         Text(
                                           playlist[index].artist,
                                           style: const TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 12),
+                                            color: Colors.black87,
+                                            fontSize: 12,
+                                          ),
                                           maxLines: 1,
                                         ),
                                       ],
@@ -391,7 +381,18 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                                   Material(
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        audioPlayer.seek(
+                                          Duration.zero,
+                                          index: index,
+                                        );
+
+                                        if (audioPlayer.playing) {
+                                          audioPlayer.stop();
+                                        } else {
+                                          audioPlayer.play();
+                                        }
+                                      },
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(50)),
                                       child: Container(
@@ -399,11 +400,22 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                                         height: 60,
                                         decoration: const BoxDecoration(
                                             shape: BoxShape.circle),
-                                        child: Icon(
-                                            playlist[index].isPlaying
-                                                ? Icons.pause_rounded
-                                                : Icons.play_arrow_rounded,
-                                            size: 27),
+                                        child: Consumer(
+                                          builder: (context, ref, child) {
+                                            final playerState = ref
+                                                .watch(audioPlayerState)
+                                                .value;
+                                            return Icon(
+                                                playerState != null
+                                                    ? currentIndex == index &&
+                                                            playerState.playing
+                                                        ? Icons.pause_rounded
+                                                        : Icons
+                                                            .play_arrow_rounded
+                                                    : Icons.play_arrow_rounded,
+                                                size: 27);
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),

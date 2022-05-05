@@ -25,14 +25,19 @@ final audioPlayerProvider = Provider.autoDispose<AudioPlayer>((ref) {
   final playlist = ref.watch(playlistProvider);
   final audioPlayer = AudioPlayer();
   audioPlayer
-      .setAudioSource(ConcatenatingAudioSource(children: [
-    for (var music in playlist)
-      AudioSource.uri(Uri.parse('asset:///src/${music.path}')),
-  ]))
+      .setAudioSource(
+    ConcatenatingAudioSource(children: [
+      for (var music in playlist)
+        AudioSource.uri(Uri.parse('asset:///src/${music.path}'), tag: music.id),
+    ]),
+    initialIndex: null,
+  )
       .catchError((error) {
     // catch load errors: 404, invalid url ...
     print("An error occured $error");
   });
+  // default loop mode to all
+
   return audioPlayer;
 });
 
@@ -56,4 +61,10 @@ final loopStream = StreamProvider.autoDispose<LoopMode>((ref) {
 final currentMusicIndex = StreamProvider.autoDispose<int?>((ref) {
   final audioPlayer = ref.watch(audioPlayerProvider);
   return audioPlayer.currentIndexStream;
+});
+
+final currentSequenceStream = StreamProvider.autoDispose((ref) {
+  final audioPlayer = ref.watch(audioPlayerProvider);
+
+  return audioPlayer.sequenceStateStream;
 });
