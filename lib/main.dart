@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lanpyathu/Models/music.dart';
+import 'package:lanpyathu/Widgets/favorite_list.dart';
+import 'package:lanpyathu/Widgets/poem_list.dart';
+import 'package:lanpyathu/Widgets/poet_list.dart';
 import 'package:lanpyathu/providers/music_provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -268,7 +270,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
             ],
           ),
         ),
-        extendBodyBehindAppBar: true,
+        // extendBodyBehindAppBar: true,
 
         body: SlidingUpPanel(
             backdropOpacity: 0.1,
@@ -292,139 +294,16 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
             },
             collapsed: const CollapsedBottomWidget(),
             panel: const PanelBottomWidget(),
-            body: Center(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final currentIndex =
-                        ref.watch(currentMusicIndex).value ?? 0;
-                    final currentSequence =
-                        ref.watch(currentSequenceStream).value;
-
-                    if (currentSequence?.sequence.isEmpty ?? true) {
-                      return const SizedBox();
-                    }
-
-                    final currentPoet =
-                        currentSequence!.currentSource!.tag as Music;
-
-                    return ListView.builder(
-                      itemCount: playlist.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              audioPlayer.seek(Duration.zero, index: index);
-                              // audioPlayer.play();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: currentPoet.id == playlist[index].id
-                                    ? Colors.blue[50]
-                                    : Colors.transparent,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(8.0),
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image(
-                                        image: AssetImage(currentPoet.cover),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          playlist[index].title,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          playlist[index].artist,
-                                          style: const TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12,
-                                          ),
-                                          maxLines: 1,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {
-                                        audioPlayer.seek(
-                                          Duration.zero,
-                                          index: index,
-                                        );
-
-                                        if (audioPlayer.playing) {
-                                          audioPlayer.stop();
-                                        } else {
-                                          audioPlayer.play();
-                                        }
-                                      },
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(50)),
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        decoration: const BoxDecoration(
-                                            shape: BoxShape.circle),
-                                        child: Consumer(
-                                          builder: (context, ref, child) {
-                                            final playerState = ref
-                                                .watch(audioPlayerState)
-                                                .value;
-                                            return Icon(
-                                                playerState != null
-                                                    ? currentIndex == index &&
-                                                            playerState.playing
-                                                        ? Icons.pause_rounded
-                                                        : Icons
-                                                            .play_arrow_rounded
-                                                    : Icons.play_arrow_rounded,
-                                                size: 27);
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+            body: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
+              child: Center(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    PoemList(playlist: playlist, audioPlayer: audioPlayer),
+                    PoetList(playlist: playlist, audioPlayer: audioPlayer),
+                    FavoriteList(playlist: playlist, audioPlayer: audioPlayer),
+                  ],
                 ),
               ),
             )),
