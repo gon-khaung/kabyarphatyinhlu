@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kabyarphatyinhlu/Screens/poet_screen.dart';
 import 'package:kabyarphatyinhlu/Widgets/favorite_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poem_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poet_list.dart';
@@ -24,8 +25,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: appTheme(),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/': (context) => const MyHomePage(
+              title: 'Flutter',
+            ),
+        // '/poet': (context) => const PoetScreen(),
+        PoetScreen.routeName: (context) => const PoetScreen(),
+      },
+      initialRoute: '/',
     );
   }
 }

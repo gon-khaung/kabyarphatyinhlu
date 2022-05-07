@@ -36,7 +36,9 @@ class PoemList extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    audioPlayer.seek(Duration.zero, index: index);
+                    currentPoet != playlist[index]
+                        ? audioPlayer.seek(Duration.zero, index: index)
+                        : null;
                     // audioPlayer.play();
                   },
                   child: Container(

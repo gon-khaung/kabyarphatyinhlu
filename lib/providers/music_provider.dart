@@ -17,6 +17,13 @@ final playlistProvider = Provider(
       path: "Alec Benjamin - Let Me Down Slowly.mp3",
       cover: "src/images/Justice_Explicit.webp",
     ),
+    Music(
+      id: 3,
+      title: "Let Me Down Slowly",
+      artist: "Alec Benjamin",
+      path: "Alec Benjamin - Let Me Down Slowly.mp3",
+      cover: "src/images/Justice_Explicit.webp",
+    ),
   ],
 );
 
