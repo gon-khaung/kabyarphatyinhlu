@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:lanpyathu/Models/music.dart';
+import 'package:kabyarphatyinhlu/Models/music.dart';
 
 final playlistProvider = Provider(
   (ref) => [

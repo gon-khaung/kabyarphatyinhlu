@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lanpyathu/Widgets/favorite_list.dart';
-import 'package:lanpyathu/Widgets/poem_list.dart';
-import 'package:lanpyathu/Widgets/poet_list.dart';
-import 'package:lanpyathu/providers/music_provider.dart';
+import 'package:kabyarphatyinhlu/Widgets/favorite_list.dart';
+import 'package:kabyarphatyinhlu/Widgets/poem_list.dart';
+import 'package:kabyarphatyinhlu/Widgets/poet_list.dart';
+import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'Methods/app_theme.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:lanpyathu/Models/music.dart';
-import 'package:lanpyathu/providers/music_provider.dart';
+import 'package:kabyarphatyinhlu/Models/music.dart';
+import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
 class PoemList extends StatelessWidget {
   const PoemList({
