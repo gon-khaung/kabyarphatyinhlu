@@ -13,7 +13,8 @@ final poetList = Provider(
       id: 2,
       name: "Maung Maung",
       cover: "src/images/Justice_Explicit.webp",
-      description: "This is Maung Maung",
+      description:
+          "This is Maung Maung This is Maung Maung This is Maung Maung This is Maung Maung",
     ),
   ],
 );
