@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lanpyathu">
+    package="com.blackhole.kabyarphatyinhlu">
    <application
-        android:label="lanpyathu"
+        android:label="Kabyar Phat Yin Hlu"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

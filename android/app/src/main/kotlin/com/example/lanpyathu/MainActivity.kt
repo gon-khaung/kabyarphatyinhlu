@@ -1,4 +1,4 @@
-package com.example.lanpyathu
+package com.blackhole.kabyarphatyinhlu
 
 import io.flutter.embedding.android.FlutterActivity
 
