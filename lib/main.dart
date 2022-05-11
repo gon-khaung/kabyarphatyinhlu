@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen.dart';
+import 'package:kabyarphatyinhlu/Screens/search_screen.dart';
 import 'package:kabyarphatyinhlu/Widgets/favorite_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poem_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poet_list.dart';
@@ -33,6 +34,8 @@ class MyApp extends StatelessWidget {
             ),
         // '/poet': (context) => const PoetScreen(),
         PoetScreen.routeName: (context) => const PoetScreen(),
+
+        '/search': (context) => const SearchScreen(),
       },
       initialRoute: '/',
     );
@@ -238,7 +241,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                 color: Colors.white,
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    // go to search search screen route
+                    Navigator.pushNamed(context, '/search');
+                  },
                   borderRadius: const BorderRadius.all(Radius.circular(50)),
                   child: Container(
                     width: 40,

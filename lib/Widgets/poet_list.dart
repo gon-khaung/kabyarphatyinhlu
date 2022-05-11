@@ -104,110 +104,111 @@ class PoetList extends StatelessWidget {
         // );
 
         return ListView.separated(
-            itemBuilder: (BuildContext context, int index) {
-              return Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    audioPlayer.seek(Duration.zero, index: index);
-                    // audioPlayer.play();
-                  },
-                  child: Container(
-                    // decoration: BoxDecoration(
-                    //   color: currentPoet.id == playlist[index].id
-                    //       ? Colors.blue[50]
-                    //       : Colors.transparent,
-                    //   borderRadius: const BorderRadius.all(
-                    //     Radius.circular(10),
-                    //   ),
-                    // ),
-                    padding: const EdgeInsets.all(8.0),
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image(
-                              image: AssetImage(poets[index].cover),
+          itemBuilder: (BuildContext context, int index) {
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  audioPlayer.seek(Duration.zero, index: index);
+                  // audioPlayer.play();
+                },
+                child: Container(
+                  // decoration: BoxDecoration(
+                  //   color: currentPoet.id == playlist[index].id
+                  //       ? Colors.blue[50]
+                  //       : Colors.transparent,
+                  //   borderRadius: const BorderRadius.all(
+                  //     Radius.circular(10),
+                  //   ),
+                  // ),
+                  padding: const EdgeInsets.all(8.0),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image(
+                            image: AssetImage(poets[index].cover),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              poets[index].name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                poets[index].name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              poets[index].description,
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12,
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                poets[index].description,
-                                style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 12,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              audioPlayer.seek(
-                                Duration.zero,
-                                index: index,
-                              );
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            audioPlayer.seek(
+                              Duration.zero,
+                              index: index,
+                            );
 
-                              if (audioPlayer.playing) {
-                                audioPlayer.stop();
-                              } else {
-                                audioPlayer.play();
-                              }
-                            },
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration:
-                                  const BoxDecoration(shape: BoxShape.circle),
-                              child: const Icon(Icons.chevron_right_rounded),
-                            ),
+                            if (audioPlayer.playing) {
+                              audioPlayer.stop();
+                            } else {
+                              audioPlayer.play();
+                            }
+                          },
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50)),
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration:
+                                const BoxDecoration(shape: BoxShape.circle),
+                            child: const Icon(Icons.chevron_right_rounded),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider(
-                height: 3,
-                thickness: 0.3,
-                color: Colors.black,
-              );
-            },
-            itemCount: poets.length);
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(
+              height: 3,
+              thickness: 0.3,
+              color: Colors.black,
+            );
+          },
+          itemCount: poets.length,
+        );
       },
     );
   }
