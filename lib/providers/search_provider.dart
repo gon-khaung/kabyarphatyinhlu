@@ -18,7 +18,7 @@ class SearchedResultNotifier extends StateNotifier<List<Music?>?> {
     state = playlist.where((element) {
       if (keyword != null) {
         if (element.title.toLowerCase().contains(keyword.toLowerCase()) ||
-            element.artist.toLowerCase().contains(keyword.toLowerCase())) {
+            element.poet.name.toLowerCase().contains(keyword.toLowerCase())) {
           return true;
         } else {
           return false;

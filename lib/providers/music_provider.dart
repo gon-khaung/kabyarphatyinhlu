@@ -40,7 +40,7 @@ final playlistProvider = Provider(
       poet_id: 1,
       poet: Poet(
           id: 1,
-          name: "Justin B",
+          name: "Alec Benjami",
           cover: "src/images/Justice_Explicit.webp",
           description: "Justin B"),
     ),
