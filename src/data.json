@@ -2,17 +2,17 @@
 	"poems": [
 		{
 			"id": 1,
-			"title": "Ghost",
-			"artist": "Justin Bieber",
-			"path": "ghost.mp3",
-			"cover": "src/images/Justice_Explicit.webp"
+			"title": "ကဗျာဆရာနှင့် ပတ်သက်ဖူးသော",
+			"cover": "ကဗျာဆရာနှင့်ပတ်သက်ဖူးသော.png",
+			"poet": "ဆောင်းဦးသွင်",
+			"path": "ကဗျာဆရာနှင့်ပတ်သက်ဖူးသော.mp3"
 		},
 		{
 			"id": 2,
-			"title": "Let me down slowly",
-			"artist": "Alec Benjamin",
-			"path": "Alec Benjamin - Let Me Down Slowly.mp3",
-			"cover": "src/images/Justice_Explicit.webp"
+			"title": "နှုတ်မဆက်ခဲ့ရသူလေးသို့",
+			"cover": "နှုတ်မဆက်ခဲ့ရသူလေးသို့.png",
+			"poet": "မိုးရဲ",
+			"path": "နှုတ်မဆက်ခဲ့ရသူလေးသို့.mp3"
 		}
 	]
 }

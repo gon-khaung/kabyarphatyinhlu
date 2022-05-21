@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
+import 'package:kabyarphatyinhlu/Models/poet.dart';
+import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 import 'package:kabyarphatyinhlu/providers/poet_provider.dart';
 
 class PoetList extends StatelessWidget {
@@ -9,16 +11,19 @@ class PoetList extends StatelessWidget {
     Key? key,
     required this.playlist,
     required this.audioPlayer,
+    this.testPoetList,
   }) : super(key: key);
 
   final List<Music> playlist;
   final AudioPlayer audioPlayer;
+  final List<Poet>? testPoetList;
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final poets = ref.watch(poetList);
+        final playlists = ref.watch(playlistProvider);
         // final currentIndex = ref.watch(currentMusicIndex).value ?? 0;
         // final currentSequence = ref.watch(currentSequenceStream).value;
 

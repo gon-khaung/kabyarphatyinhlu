@@ -5,13 +5,13 @@ final poetList = Provider(
   (ref) => [
     Poet(
       id: 1,
-      name: "Aung Aung",
+      name: "ဆောင်ဦးသွင်",
       cover: "src/images/Justice_Explicit.webp",
       description: "This is Aung Aung",
     ),
     Poet(
       id: 2,
-      name: "Maung Maung",
+      name: "မိုးရဲ",
       cover: "src/images/Justice_Explicit.webp",
       description:
           "This is Maung Maung This is Maung Maung This is Maung Maung This is Maung Maung",

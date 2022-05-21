@@ -112,9 +112,19 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: const Image(
-                          image: AssetImage("src/images/Justice_Explicit.webp"),
-                          fit: BoxFit.cover),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final currentMusic =
+                              ref.watch(currentMusicIndex).value ?? 0;
+                          final playlist = ref.watch(playlistProvider);
+                          return Image(
+                            image: AssetImage(
+                              playlist[currentMusic].cover,
+                            ),
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
                     ),
                   ),
 
@@ -134,17 +144,18 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                               .replaceAll("%20", " ")
                               .replaceAll(".mp3", ''),
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
+                          maxLines: 2,
                         );
                       },
                     ),
                   ),
 
                   Container(
-                    margin: const EdgeInsets.only(top: 30),
+                    margin: const EdgeInsets.only(top: 10),
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -241,7 +252,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 30),
+                    margin: const EdgeInsets.only(top: 5),
                     child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Consumer(
@@ -257,14 +268,16 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                                   // NOTE: double to int
                                   "${twoDigits(current.inMinutes)} : ${twoDigits(current.inSeconds % 60)}",
                                   style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 Text(
                                   "${twoDigits(audioPlayer.duration != null ? audioPlayer.duration!.inMinutes : 00)} : ${twoDigits(audioPlayer.duration != null ? audioPlayer.duration!.inSeconds % 60 : 00)}",
                                   style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             );
@@ -273,7 +286,8 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                   ),
 
                   // Progress bar of the song with seek bar
-                  Container(
+                  SizedBox(
+                    height: 60,
                     child: Consumer(
                       builder: (context, ref, child) {
                         final currentPosition =

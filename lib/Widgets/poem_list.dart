@@ -27,7 +27,7 @@ class PoemList extends StatelessWidget {
             return const SizedBox();
           }
 
-          final currentPoet = currentSequence!.currentSource!.tag as Music;
+          final currentPoem = currentSequence!.currentSource!.tag as Music;
 
           return ListView.builder(
             itemCount: playlist.length,
@@ -36,14 +36,14 @@ class PoemList extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    currentPoet != playlist[index]
+                    currentPoem != playlist[index]
                         ? audioPlayer.seek(Duration.zero, index: index)
                         : null;
                     // audioPlayer.play();
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: currentPoet.id == playlist[index].id
+                      color: currentPoem.id == playlist[index].id
                           ? Colors.blue[50]
                           : Colors.transparent,
                       borderRadius: const BorderRadius.all(
@@ -61,7 +61,7 @@ class PoemList extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image(
-                              image: AssetImage(currentPoet.cover),
+                              image: AssetImage(playlist[index].cover),
                             ),
                           ),
                         ),
@@ -75,7 +75,7 @@ class PoemList extends StatelessWidget {
                               Text(
                                 playlist[index].title,
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
