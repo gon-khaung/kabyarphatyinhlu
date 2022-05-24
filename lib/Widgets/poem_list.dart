@@ -17,7 +17,11 @@ class PoemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
+      padding: const EdgeInsets.only(
+        left: 1,
+        right: 1,
+        bottom: 100,
+      ),
       child: Consumer(
         builder: (context, ref, child) {
           final currentIndex = ref.watch(currentMusicIndex).value ?? 0;

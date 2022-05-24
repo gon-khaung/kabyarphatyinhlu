@@ -237,119 +237,127 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
         ),
       ),
       child: Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          appBar: AppBar(
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      _advancedDrawerController.showDrawer();
+                    },
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      child: const Icon(Icons.menu_rounded, size: 30),
+                    ),
+                  ),
+                ),
+                Material(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(50)),
+                  child: InkWell(
+                    onTap: () {
+                      // go to search search screen route
+                      Navigator.pushNamed(context, '/search');
+                    },
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      child: const Icon(Icons.search_rounded, size: 30),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            bottom: TabBar(
+              controller: _tabController,
+              labelColor: Colors.red,
+              unselectedLabelColor: Colors.black,
+              indicatorColor: Colors.red,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorWeight: 3.5,
+              tabs: const [
+                Tab(
+                  child: Text(
+                    "Poems",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    "Poets",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    "Favorites",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // extendBodyBehindAppBar: true,
+
+          body: Stack(
             children: [
-              Material(
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
+                child: Center(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      PoemList(playlist: playlist, audioPlayer: audioPlayer),
+                      PoetList(playlist: playlist, audioPlayer: audioPlayer),
+                      FavoriteList(
+                          playlist: playlist, audioPlayer: audioPlayer),
+                    ],
+                  ),
+                ),
+              ),
+              SlidingUpPanel(
+                backdropOpacity: 0.1,
+                backdropEnabled: true,
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+                minHeight: 100,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0),
+                  ),
+                ],
                 color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    _advancedDrawerController.showDrawer();
-                  },
-                  borderRadius: const BorderRadius.all(Radius.circular(50)),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: const Icon(Icons.menu_rounded, size: 30),
-                  ),
-                ),
-              ),
-              Material(
-                color: Colors.white,
-                borderRadius: const BorderRadius.all(Radius.circular(50)),
-                child: InkWell(
-                  onTap: () {
-                    // go to search search screen route
-                    Navigator.pushNamed(context, '/search');
-                  },
-                  borderRadius: const BorderRadius.all(Radius.circular(50)),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: const Icon(Icons.search_rounded, size: 30),
-                  ),
-                ),
+                onPanelOpened: () {
+                  setState(() {
+                    // padding = 0;
+                  });
+                },
+                onPanelClosed: () {
+                  setState(() {
+                    // padding = 100;
+                  });
+                },
+                collapsed: const CollapsedBottomWidget(),
+                panel: const PanelBottomWidget(),
               ),
             ],
-          ),
-          bottom: TabBar(
-            controller: _tabController,
-            labelColor: Colors.red,
-            unselectedLabelColor: Colors.black,
-            indicatorColor: Colors.red,
-            indicatorSize: TabBarIndicatorSize.label,
-            indicatorWeight: 3.5,
-            tabs: const [
-              Tab(
-                child: Text(
-                  "Poems",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  "Poets",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  "Favorites",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        ),
-        // extendBodyBehindAppBar: true,
+          )
 
-        body: SlidingUpPanel(
-            backdropOpacity: 0.1,
-            backdropEnabled: true,
-            maxHeight: MediaQuery.of(context).size.height * 0.8,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0),
-              ),
-            ],
-            color: Colors.transparent,
-            onPanelOpened: () {
-              setState(() {
-                // padding = 0;
-              });
-            },
-            onPanelClosed: () {
-              setState(() {
-                // padding = 100;
-              });
-            },
-            collapsed: const CollapsedBottomWidget(),
-            panel: const PanelBottomWidget(),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 1),
-              child: Center(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    PoemList(playlist: playlist, audioPlayer: audioPlayer),
-                    PoetList(playlist: playlist, audioPlayer: audioPlayer),
-                    FavoriteList(playlist: playlist, audioPlayer: audioPlayer),
-                  ],
-                ),
-              ),
-            )),
-
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: _incrementCounter,
-        //   tooltip: 'Increment',
-        //   child: const Icon(Icons.add),
-        // ), // This trailing comma makes auto-formatting nicer for build methods.
-      ),
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: _incrementCounter,
+          //   tooltip: 'Increment',
+          //   child: const Icon(Icons.add),
+          // ), // This trailing comma makes auto-formatting nicer for build methods.
+          ),
     );
   }
 }

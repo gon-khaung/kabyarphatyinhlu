@@ -9,7 +9,7 @@ class Music extends Equatable {
   String path;
   String cover;
   int poet_id;
-  Poet poet;
+  Poet? poet;
   Music({
     required this.id,
     required this.title,
@@ -17,7 +17,7 @@ class Music extends Equatable {
     required this.path,
     required this.cover,
     required this.poet_id,
-    required this.poet,
+    this.poet,
   });
 
   @override
@@ -29,7 +29,6 @@ class Music extends Equatable {
       path,
       cover,
       poet_id,
-      poet,
     ];
   }
 
