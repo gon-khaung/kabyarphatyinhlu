@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kabyarphatyinhlu/Methods/popup_player.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen.dart';
 import 'package:kabyarphatyinhlu/Screens/search_screen.dart';
 import 'package:kabyarphatyinhlu/Widgets/favorite_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poem_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poet_list.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'Methods/app_theme.dart';
-import 'Widgets/SlidingUpPanel/collapsed_bottom_widget.dart';
-import 'Widgets/SlidingUpPanel/panel_bottom_widget.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -325,30 +323,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                   ),
                 ),
               ),
-              SlidingUpPanel(
-                backdropOpacity: 0.1,
-                backdropEnabled: true,
-                maxHeight: MediaQuery.of(context).size.height * 0.8,
-                minHeight: 100,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0),
-                  ),
-                ],
-                color: Colors.transparent,
-                onPanelOpened: () {
-                  setState(() {
-                    // padding = 0;
-                  });
-                },
-                onPanelClosed: () {
-                  setState(() {
-                    // padding = 100;
-                  });
-                },
-                collapsed: const CollapsedBottomWidget(),
-                panel: const PanelBottomWidget(),
-              ),
+              const PopupPlayer(),
             ],
           )
 

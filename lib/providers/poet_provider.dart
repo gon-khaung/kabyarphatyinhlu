@@ -6,15 +6,14 @@ final poetList = Provider(
     Poet(
       id: 1,
       name: "ဆောင်ဦးသွင်",
-      cover: "src/images/Justice_Explicit.webp",
+      cover: "src/images/ကဗျာဆရာနှင့်ပတ်သက်ဖူးသော.png",
       description: "This is Aung Aung",
     ),
     Poet(
       id: 2,
       name: "မိုးရဲ",
-      cover: "src/images/Justice_Explicit.webp",
-      description:
-          "This is Maung Maung This is Maung Maung This is Maung Maung This is Maung Maung",
+      cover: "src/images/နှုတ်မဆက်ခဲ့ရသူလေးသို့.png",
+      description: "မိုးရဲ",
     ),
     Poet(
       id: 3,
