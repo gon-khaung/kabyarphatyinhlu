@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 
 // final playlistProviderTest = Provider(
@@ -314,16 +316,36 @@ final favoriteProvider = StateNotifierProvider<FavoriteNotifier, List<Music>>(
 
 class FavoriteNotifier extends StateNotifier<List<Music>> {
   final List<Music> playlist = [];
-  FavoriteNotifier() : super([]);
+
+  FavoriteNotifier() : super([]) {
+    _init();
+  }
 
   void add(Music music) {
     // remove if already exist
+    final controller = Get.put(Controller());
 
     if (!state.contains(music)) {
       state = [music, ...state];
+      controller.save(state);
     } else {
       state = state.where((m) => m.id != music.id).toList();
+      controller.save(state);
     }
+  }
+
+  void _init() {
+    List? controller = GetStorage('favorite').read<List>('favorite');
+    List<Music> play = [];
+    // state = controller.playlist.map((m) {
+    //   play.add(Music.fromJson(m));
+    //   return Music.fromJson(m);
+    // }).toList();
+    if (controller != null) {
+      play = controller.map((m) => Music.fromJson(m)).toList();
+    }
+
+    state = play;
   }
 
   void addAll(List<Music> playlist) {
@@ -337,5 +359,35 @@ class FavoriteNotifier extends StateNotifier<List<Music>> {
 
   void remove(Music music) {
     state.remove(music);
+  }
+}
+
+class Controller extends GetxController {
+  var favoriteList = <Music>[].obs;
+  final box = GetStorage('favorite');
+  List get playlist => favoriteList.value;
+
+  // @override
+  // void onInit() {
+  //   List? test = box.read<List>('favorite');
+
+  //   if (test != null) {
+  //     favoriteList.value = test.map((e) => Music.fromJson(e)).toList().obs;
+  //   }
+
+  //   ever(favoriteList, (_) {
+  //     box.write('favorite', favoriteList.toList());
+  //   });
+
+  //   super.onInit();
+  // }
+
+  void save(List<Music> state) {
+    var stateAsMap = state.map((e) => e.toJson()).toList();
+    // String stateAsString = jsonEncode(stateAsMap);
+
+    box.write('favorite', state.toList());
+
+    update();
   }
 }

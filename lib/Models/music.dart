@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 
 import 'package:kabyarphatyinhlu/Models/poet.dart';
@@ -52,38 +54,49 @@ class Music extends Equatable {
     );
   }
 
-  // Map<String, dynamic> toMap() {
-  //   final result = <String, dynamic>{};
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
 
-  //   result.addAll({'id': id});
-  //   result.addAll({'title': title});
-  //   result.addAll({'artist': artist});
-  //   result.addAll({'path': path});
-  //   result.addAll({'cover': cover});
-  //   result.addAll({'poet_id': poet_id});
-  //   // result.addAll({'poet': poet.toMap()});
+    result.addAll({'id': id});
+    result.addAll({'title': title});
+    result.addAll({'artist': artist});
+    result.addAll({'path': path});
+    result.addAll({'cover': cover});
+    result.addAll({'poet_id': poet_id});
+    // result.addAll({'poet': poet.toMap()});
 
-  //   return result;
-  // }
+    return result;
+  }
 
-  // factory Music.fromMap(Map<String, dynamic> map) {
-  //   return Music(
-  //     id: map['id']?.toInt() ?? 0,
-  //     title: map['title'] ?? '',
-  //     artist: map['artist'] ?? '',
-  //     path: map['path'] ?? '',
-  //     cover: map['cover'] ?? '',
-  //     poet_id: map['poet_id']?.toInt() ?? 0,
-  //     poet: Poet.fromMap(map['poet']),
-  //   );
-  // }
+  factory Music.fromMap(Map<String, dynamic> map) {
+    return Music(
+      id: map['id']?.toInt() ?? 0,
+      title: map['title'] ?? '',
+      artist: map['artist'] ?? '',
+      path: map['path'] ?? '',
+      cover: map['cover'] ?? '',
+      poet_id: map['poet_id']?.toInt() ?? 0,
+    );
+  }
 
-  // String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap());
 
-  // factory Music.fromJson(String source) => Music.fromMap(json.decode(source));
+  factory Music.fromJson(String source) => Music.fromMap(json.decode(source));
 
   @override
   String toString() {
     return 'Music(id: $id, title: $title, artist: $artist, path: $path, cover: $cover, poet_id: $poet_id, poet: $poet)';
+  }
+
+  // to list
+  static List<Music> fromList(List<dynamic> list) {
+    if (list == null) return [];
+    return list.map((e) => Music.fromMap(e as Map<String, dynamic>)).toList();
+  }
+
+  // to list
+  static List<Map<String, dynamic>> toList(List<Music> list) {
+    if (list == null) return [];
+    return list.map((e) => e.toMap()).toList();
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kabyarphatyinhlu/Methods/popup_player.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen.dart';
@@ -14,9 +15,10 @@ import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
 import 'Methods/app_theme.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await GetStorage.init('favorite');
   runApp(const ProviderScope(child: MyApp()));
   FlutterNativeSplash.remove();
 }
@@ -420,7 +422,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                 Container(
                   margin: const EdgeInsets.only(bottom: 30),
                   child: const Text(
-                    "Kabyar Phat Yin Hlu",
+                    "ကဗျာဖတ်ရင်းလှူ",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -437,21 +439,21 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                     ),
                   ),
                 ),
-                ListTile(
-                  onTap: () {},
-                  leading: const Icon(Icons.account_circle_rounded),
-                  title: const Text(
-                    'Poets',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
+                // ListTile(
+                //   onTap: () {},
+                //   leading: const Icon(Icons.account_circle_rounded),
+                //   title: const Text(
+                //     'Poets',
+                //     style: TextStyle(
+                //       fontSize: 16,
+                //     ),
+                //   ),
+                // ),
                 ListTile(
                   onTap: () {},
                   leading: const Icon(Icons.favorite),
                   title: const Text(
-                    'Favourites',
+                    'How to',
                     style: TextStyle(
                       fontSize: 16,
                     ),
