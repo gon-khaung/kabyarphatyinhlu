@@ -399,7 +399,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
               children: [
                 Container(
                   width: double.infinity,
-                  height: 128.0,
+                  height: 100.0,
                   margin: const EdgeInsets.only(
                     top: 50.0,
                     bottom: 20.0,
@@ -409,7 +409,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                     color: Colors.black26,
                     shape: BoxShape.circle,
                   ),
-                  child: Image.network("https://via.placeholder.com/150"),
+                  child: Image.asset(
+                    "src/images/nwayookabyar-red.jpg",
+                    // fit: BoxFit.cover,
+                  ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(bottom: 30),
@@ -480,7 +483,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                       vertical: 16.0,
                     ),
                     child: const Text(
-                      'Version : 1.0.0',
+                      '© 2022 Nwayookabyar. All rights reserved.',
                       style: TextStyle(fontSize: 12, color: Colors.black54),
                     ),
                   ),
