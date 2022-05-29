@@ -28,7 +28,8 @@ class PoemList extends StatelessWidget {
           final currentSequence = ref.watch(currentSequenceStream).value;
 
           if (currentSequence?.sequence.isEmpty ?? true) {
-            return const SizedBox();
+            // show loading
+            return const Center(child: CircularProgressIndicator());
           }
 
           final currentPoem = currentSequence!.currentSource!.tag as Music;

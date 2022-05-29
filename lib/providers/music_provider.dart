@@ -3,7 +3,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/Models/poet.dart';
 
-final playlistProvider = Provider(
+final playlistProviderTest = Provider(
   (ref) => [
     // Music(
     //   id: 1,
@@ -308,31 +308,67 @@ final playlistProvider = Provider(
   ],
 );
 
+final playlistProvider =
+    StateNotifierProvider<PlaylistStateNotifier, List<Music>>(
+  ((ref) {
+    return PlaylistStateNotifier();
+  }),
+);
+
+class PlaylistStateNotifier extends StateNotifier<List<Music>> {
+  final List<Music> playlist = [];
+  PlaylistStateNotifier() : super([]);
+
+  void add(Music music) {
+    if (!state.contains(music)) {
+      state = [...state, music];
+    }
+  }
+
+  void addAll(List<Music> playlist) {
+    // skip existing music
+    for (var music in playlist) {
+      if (!state.contains(music)) {
+        state = [...state, music];
+      }
+    }
+  }
+
+  void remove(Music music) {
+    state.remove(music);
+  }
+}
+
 final audioPlayerProvider = Provider.autoDispose<AudioPlayer>((ref) {
   final playlist = ref.watch(playlistProvider);
   final audioPlayer = AudioPlayer();
-  audioPlayer
-      .setAudioSource(
-    ConcatenatingAudioSource(children: [
-      for (var music in playlist)
-        AudioSource.uri(
-          Uri.parse('asset:///src/poems/${music.path}'),
-          tag: Music(
-            id: music.id,
-            title: music.title,
-            artist: music.artist,
-            path: music.path,
-            cover: music.cover,
-            poet_id: music.poet_id,
-            poet: music.poet,
-          ),
-        ),
-    ]),
-  )
-      .catchError((error) {
-    // catch load errors: 404, invalid url ...
-    print("An error occured $error");
-  });
+
+  if (playlist.isNotEmpty) {
+    audioPlayer
+        .setAudioSource(
+      ConcatenatingAudioSource(
+        children: [
+          for (var music in playlist)
+            AudioSource.uri(
+              Uri.parse('asset:///src/poems/${music.path}'),
+              tag: Music(
+                id: music.id,
+                title: music.title,
+                artist: music.artist,
+                path: music.path,
+                cover: music.cover,
+                poet_id: music.poet_id,
+                poet: music.poet,
+              ),
+            ),
+        ],
+      ),
+    )
+        .catchError((error) {
+      // catch load errors: 404, invalid url ...
+      print("An error occured $error");
+    });
+  }
   // default loop mode to all
 
   return audioPlayer;
