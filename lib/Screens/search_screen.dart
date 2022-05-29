@@ -172,7 +172,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Image(
-                                      image: AssetImage(currentPoem.cover),
+                                      image: AssetImage(
+                                          searchedPlaylist[index]!.cover),
                                     ),
                                   ),
                                 ),

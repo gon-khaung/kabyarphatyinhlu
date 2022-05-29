@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:kabyarphatyinhlu/Methods/colors.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
+import 'package:kabyarphatyinhlu/providers/favorite_provider.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
 class PanelBottomWidget extends ConsumerStatefulWidget {
@@ -213,22 +214,36 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         const SizedBox(
                           width: 20,
                         ),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration:
-                                  const BoxDecoration(shape: BoxShape.circle),
-                              child: const Icon(Icons.favorite_outline_rounded,
-                                  size: 30),
+                        Consumer(builder: (context, ref, child) {
+                          final currentMusic =
+                              ref.watch(currentMusicIndex).value ?? 0;
+                          final playlist = ref.watch(playlistProvider);
+                          final favorite = ref.watch(favoriteProvider);
+
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                final favorite =
+                                    ref.read(favoriteProvider.notifier);
+                                favorite.add(playlist[currentMusic]);
+                              },
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(50)),
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration:
+                                    const BoxDecoration(shape: BoxShape.circle),
+                                child: Icon(
+                                    favorite.contains(playlist[currentMusic])
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_outline_rounded,
+                                    size: 30),
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                         const SizedBox(
                           width: 20,
                         ),

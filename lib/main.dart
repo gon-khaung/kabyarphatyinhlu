@@ -9,6 +9,7 @@ import 'package:kabyarphatyinhlu/Screens/search_screen.dart';
 import 'package:kabyarphatyinhlu/Widgets/favorite_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poem_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poet_list.dart';
+import 'package:kabyarphatyinhlu/providers/favorite_provider.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
 import 'Methods/app_theme.dart';
@@ -37,8 +38,9 @@ class _MyAppState extends State<MyApp> {
 
   // after 3 seconds, remove the splash screen`
   Future<void> _removeSplashScreen() async {
-    await Future.delayed(const Duration(seconds: 3));
-    FlutterNativeSplash.remove();
+    await Future.delayed(const Duration(seconds: 3), () {
+      FlutterNativeSplash.remove();
+    });
   }
 
   @override
@@ -110,6 +112,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
   Widget build(BuildContext context) {
     final playlist = ref.watch(playlistProvider);
     final audioPlayer = ref.watch(audioPlayerProvider);
+    final favoriteList = ref.watch(favoriteProvider);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -577,7 +580,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                       PoemList(playlist: playlist, audioPlayer: audioPlayer),
                       PoetList(playlist: playlist, audioPlayer: audioPlayer),
                       FavoriteList(
-                          playlist: playlist, audioPlayer: audioPlayer),
+                          playlist: favoriteList, audioPlayer: audioPlayer),
                     ],
                   ),
                 ),
