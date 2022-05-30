@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -96,7 +98,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
     super.initState();
     ref.read(playlistProvider);
     ref.read(audioPlayerProvider);
-    _addMusicToList();
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      _addMusicToList();
+    });
   }
 
   void _incrementCounter() {
