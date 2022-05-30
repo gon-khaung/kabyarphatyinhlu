@@ -17,7 +17,7 @@ class SearchedResultNotifier extends StateNotifier<List<Music?>?> {
     final playlist = ref.watch(playlistProvider);
     final poets = ref.watch(poetList);
 
-    state = playlist.where((element) {
+    state = playlist.asData!.value.where((element) {
       if (keyword != null) {
         if (element.title.toLowerCase().contains(keyword.toLowerCase()) ||
             element.artist.toLowerCase().contains(keyword)) {

@@ -142,8 +142,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                             if (searchedPlaylist[index] != null) {
                               var currentPlaying = searchedPlaylist[index]!;
-                              final getIndexOfMusic =
-                                  playlist.indexOf(currentPlaying);
+                              final getIndexOfMusic = playlist.asData!.value
+                                  .indexOf(currentPlaying);
                               currentPoem.id != currentPlaying.id
                                   ? audioPlayer.seek(Duration.zero,
                                       index: getIndexOfMusic)
@@ -215,8 +215,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                     onTap: () {
                                       var currentPlaying =
                                           searchedPlaylist[index]!;
-                                      final getIndexOfMusic =
-                                          playlist.indexOf(currentPlaying);
+                                      final getIndexOfMusic = playlist
+                                          .asData!.value
+                                          .indexOf(currentPlaying);
                                       audioPlayer.seek(
                                         Duration.zero,
                                         index: getIndexOfMusic,
@@ -242,8 +243,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
                                           var currentPlaying =
                                               searchedPlaylist[index]!;
-                                          final getIndexOfMusic =
-                                              playlist.indexOf(currentPlaying);
+                                          final getIndexOfMusic = playlist
+                                              .asData!.value
+                                              .indexOf(currentPlaying);
                                           return Icon(
                                             playerState != null
                                                 ? currentIndex ==

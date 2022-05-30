@@ -118,11 +118,15 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                           final currentMusic =
                               ref.watch(currentMusicIndex).value ?? 0;
                           final playlist = ref.watch(playlistProvider);
-                          return Image(
-                            image: AssetImage(
-                              playlist[currentMusic].cover,
+                          return playlist.when(
+                            loading: () => const CircularProgressIndicator(),
+                            error: (err, stack) => Text('Error: $err'),
+                            data: (value) => Image(
+                              image: AssetImage(
+                                value[currentMusic].cover,
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           );
                         },
                       ),
@@ -138,19 +142,25 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                             ref.watch(currentMusicIndex).value ?? 0;
                         final playlist = ref.watch(playlistProvider);
 
-                        return Text(
-                          //  display
-                          playlist[currentMusic]
-                              .title
-                              .replaceAll("%20", " ")
-                              .replaceAll(".mp3", ''),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                        return playlist.when(
+                          loading: () => const CircularProgressIndicator(),
+                          error: (err, stack) => Text('Error: $err'),
+                          data: (value) => Text(
+                            //  display
+                            value[currentMusic]
+                                .title
+                                .replaceAll("%20", " ")
+                                .replaceAll(".mp3", ''),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            maxLines: 2,
                           ),
-                          maxLines: 2,
                         );
+
+                        // return const CircularProgressIndicator();
                       },
                     ),
                   ),
@@ -220,29 +230,40 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                           final playlist = ref.watch(playlistProvider);
                           final favorite = ref.watch(favoriteProvider);
 
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                final favorite =
-                                    ref.read(favoriteProvider.notifier);
-                                favorite.add(playlist[currentMusic]);
-                              },
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(50)),
-                              child: Container(
-                                width: 60,
-                                height: 60,
-                                decoration:
-                                    const BoxDecoration(shape: BoxShape.circle),
-                                child: Icon(
-                                    favorite.contains(playlist[currentMusic])
-                                        ? Icons.favorite_rounded
-                                        : Icons.favorite_outline_rounded,
-                                    size: 30),
-                              ),
-                            ),
+                          return playlist.when(
+                            data: (value) {
+                              return Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    final favorite =
+                                        ref.read(favoriteProvider.notifier);
+                                    favorite.add(value[currentMusic]);
+                                  },
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(50)),
+                                  child: Container(
+                                    width: 60,
+                                    height: 60,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                        favorite.contains(value[currentMusic])
+                                            ? Icons.favorite_rounded
+                                            : Icons.favorite_outline_rounded,
+                                        size: 30),
+                                  ),
+                                ),
+                              );
+                            },
+                            error: (d, t) => Text("Error: $d"),
+                            loading: () {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
                           );
+                          // return Container();
                         }),
                         const SizedBox(
                           width: 20,
@@ -453,3 +474,27 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
 
 // Return Two Digit String
 String twoDigits(int n) => n.toString().padLeft(2, "0");
+
+class PoemCover extends ConsumerWidget {
+  const PoemCover({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // AsyncValue<List<Music>> playlist = ref.watch(playlistProvider);
+
+    final currentMusic = ref.watch(currentMusicIndex).value ?? 0;
+    final playlist = ref.watch(playlistProvider);
+    return playlist.when(
+      loading: () => const CircularProgressIndicator(),
+      error: (err, stack) => Text('Error: $err'),
+      data: (value) => Image(
+        image: AssetImage(
+          value[currentMusic].cover,
+        ),
+        fit: BoxFit.cover,
+      ),
+    );
+
+    // return const CircularProgressIndicator();
+  }
+}

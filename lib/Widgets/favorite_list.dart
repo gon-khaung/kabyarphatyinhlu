@@ -39,7 +39,7 @@ class FavoriteList extends StatelessWidget {
                   onTap: () {
                     var currentPlaying = playlist[index];
                     final getIndexOfMusic =
-                        mainPlaylist.indexOf(currentPlaying);
+                        mainPlaylist.asData!.value.indexOf(currentPlaying);
                     audioPlayer.seek(
                       Duration.zero,
                       index: getIndexOfMusic,
@@ -107,8 +107,8 @@ class FavoriteList extends StatelessWidget {
                           child: InkWell(
                             onTap: () {
                               var currentPlaying = playlist[index];
-                              final getIndexOfMusic =
-                                  mainPlaylist.indexOf(currentPlaying);
+                              final getIndexOfMusic = mainPlaylist.asData!.value
+                                  .indexOf(currentPlaying);
                               audioPlayer.seek(
                                 Duration.zero,
                                 index: getIndexOfMusic,
@@ -132,8 +132,9 @@ class FavoriteList extends StatelessWidget {
                                   final playerState =
                                       ref.watch(audioPlayerState).value;
                                   var currentPlaying = playlist[index];
-                                  final getIndexOfMusic =
-                                      mainPlaylist.indexOf(currentPlaying);
+                                  final getIndexOfMusic = mainPlaylist
+                                      .asData!.value
+                                      .indexOf(currentPlaying);
                                   return Icon(
                                       playerState != null
                                           ? currentIndex == getIndexOfMusic &&

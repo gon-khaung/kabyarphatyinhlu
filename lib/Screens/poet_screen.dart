@@ -21,10 +21,10 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
         ModalRoute.of(context)?.settings.arguments as PoetScreenArguments;
     final playlists = ref.watch(playlistProvider);
     final audioPlayer = ref.watch(audioPlayerProvider);
-    final totalPoems = playlists
+    final totalPoems = playlists.asData!.value
         .where((element) => element.poet_id == arguments.poet.id)
         .length;
-    final poemsByPoet = playlists
+    final poemsByPoet = playlists.asData!.value
         .where((element) => element.poet_id == arguments.poet.id)
         .toList();
 
@@ -138,7 +138,7 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                           currentSequence!.currentSource!.tag as Music;
 
                       final currentPoemIndex =
-                          playlists.indexOf(poemsByPoet[index]);
+                          playlists.asData!.value.indexOf(poemsByPoet[index]);
 
                       return Material(
                         color: Colors.transparent,

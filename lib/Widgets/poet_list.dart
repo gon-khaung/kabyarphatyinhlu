@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
-import 'package:kabyarphatyinhlu/Models/poet.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen_arguments.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 import 'package:kabyarphatyinhlu/providers/poet_provider.dart';
 
-class PoetList extends StatelessWidget {
+class PoetList extends ConsumerStatefulWidget {
   const PoetList({
     Key? key,
-    required this.playlist,
-    required this.audioPlayer,
-    this.testPoetList,
+    // required this.playlist,
+    // required this.audioPlayer,
+    // this.testPoetList,
   }) : super(key: key);
 
-  final List<Music> playlist;
-  final AudioPlayer audioPlayer;
-  final List<Poet>? testPoetList;
+  // final List<Music> playlist;
+  // final AudioPlayer audioPlayer;
+  // final List<Poet>? testPoetList;
+
+  @override
+  ConsumerState<PoetList> createState() => _PoetListState();
+}
+
+class _PoetListState extends ConsumerState<PoetList> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(audioPlayerProvider);
+    ref.read(currentMusicIndex);
+    ref.read(currentSequenceStream);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +39,7 @@ class PoetList extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           final poets = ref.watch(poetList);
-          final playlists = ref.watch(playlistProvider);
-          final currentIndex = ref.watch(currentMusicIndex).value ?? 0;
+          // final currentIndex = ref.watch(currentMusicIndex).value ?? 0;
           final currentSequence = ref.watch(currentSequenceStream).value;
 
           if (currentSequence?.sequence.isEmpty ?? true) {
