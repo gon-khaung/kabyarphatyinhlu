@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
 
   // after 3 seconds, remove the splash screen`
   Future<void> _removeSplashScreen() async {
-    await Future.delayed(const Duration(seconds: 3), () {
+    await Future.delayed(const Duration(seconds: 2), () {
       FlutterNativeSplash.remove();
     });
   }
@@ -98,7 +98,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
     super.initState();
     ref.read(playlistProvider);
     ref.read(audioPlayerProvider);
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       _addMusicToList();
     });
   }
