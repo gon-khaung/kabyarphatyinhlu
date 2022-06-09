@@ -76,13 +76,16 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
   @override
   Widget build(BuildContext context) {
     final audioPlayer = ref.read(audioPlayerProvider);
+    final shuffleStatus = ref.watch(shuffleStream).value ?? false;
 
     return Padding(
       padding: const EdgeInsets.only(top: 100),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).primaryColor
+              : Colors.white,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,11 +154,8 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                                 .title
                                 .replaceAll("%20", " ")
                                 .replaceAll(".mp3", ''),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge,
+                            textAlign: TextAlign.center,
                             maxLines: 2,
                           ),
                         );
@@ -175,21 +175,28 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              audioPlayer.setShuffleModeEnabled(!shuffleStatus);
+                            },
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(50)),
                             child: Container(
                               width: 60,
                               height: 60,
-                              decoration:
-                                  const BoxDecoration(shape: BoxShape.circle),
-                              child:
-                                  const Icon(Icons.shuffle_rounded, size: 30),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                shuffleStatus
+                                    ? Icons.shuffle_on_rounded
+                                    : Icons.shuffle_rounded,
+                                size: 25,
+                              ),
                             ),
                           ),
                         ),
                         const SizedBox(
-                          width: 20,
+                          width: 10,
                         ),
                         Material(
                           color: Colors.transparent,
@@ -215,7 +222,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                                       : loopMode == LoopMode.one
                                           ? Icons.repeat_one_rounded
                                           : Icons.repeat_rounded,
-                                  size: 30,
+                                  size: 25,
                                 ),
                               ),
                             );
@@ -251,7 +258,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                                         favorite.contains(value[currentMusic])
                                             ? Icons.favorite_rounded
                                             : Icons.favorite_outline_rounded,
-                                        size: 30),
+                                        size: 25),
                                   ),
                                 ),
                               );
@@ -265,9 +272,9 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                           );
                           // return Container();
                         }),
-                        const SizedBox(
-                          width: 20,
-                        ),
+                        // const SizedBox(
+                        //   width: 10,
+                        // ),
                         // Material(
                         //   color: Colors.transparent,
                         //   child: InkWell(
@@ -303,17 +310,11 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                                 Text(
                                   // NOTE: double to int
                                   "${twoDigits(current.inMinutes)} : ${twoDigits(current.inSeconds % 60)}",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Text(
                                   "${twoDigits(audioPlayer.duration != null ? audioPlayer.duration!.inMinutes : 00)} : ${twoDigits(audioPlayer.duration != null ? audioPlayer.duration!.inSeconds % 60 : 00)}",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
                             );
@@ -323,7 +324,7 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
 
                   // Progress bar of the song with seek bar
                   SizedBox(
-                    height: 60,
+                    // height: 10,
                     child: Consumer(
                       builder: (context, ref, child) {
                         final currentPosition =

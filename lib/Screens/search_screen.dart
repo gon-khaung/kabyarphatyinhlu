@@ -32,25 +32,30 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         elevation: 0.5,
         title: Row(
           children: [
             Expanded(
               child: TextField(
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
                 controller: _textFromFieldController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Search...',
-                  hintStyle: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black,
-                  ),
+                  // hintStyle: TextStyle(
+                  //   fontSize: 18,
+                  //   fontWeight: FontWeight.normal,
+                  //   color: Colors.black,
+                  // ),
                   constraints: BoxConstraints(),
                   border: UnderlineInputBorder(
                     borderSide: BorderSide(
                       width: 2,
-                      color: Colors.black45,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                   isDense: true,
@@ -60,7 +65,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                       width: 1,
-                      color: Colors.black45,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black54,
                     ),
                   ),
                 ),
@@ -83,7 +90,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   child: const Icon(
                     Icons.search_rounded,
                     size: 30,
-                    color: Colors.black,
                   ),
                 ),
               ),
@@ -115,14 +121,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       currentSequence!.currentSource!.tag as Music;
 
                   if (searchedPlaylist == null) {
-                    return const Center(
-                      child: Text('No result found'),
+                    return Center(
+                      child: Text(
+                        'No result found',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                     );
                   }
 
                   if (searchedPlaylist.isEmpty) {
-                    return const Center(
-                      child: Text('No result found'),
+                    return Center(
+                      child: Text(
+                        'No result found',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                     );
                   }
 
@@ -155,7 +167,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             decoration: BoxDecoration(
                               color:
                                   currentPoem.id == searchedPlaylist[index]!.id
-                                      ? Colors.blue[50]
+                                      ? Theme.of(context).primaryColor
                                       : Colors.transparent,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(10),
@@ -187,20 +199,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                     children: [
                                       Text(
                                         searchedPlaylist[index]!.title,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
                                       ),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       Text(
                                         searchedPlaylist[index]!.artist,
-                                        style: const TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 12,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall,
                                         maxLines: 1,
                                       ),
                                     ],

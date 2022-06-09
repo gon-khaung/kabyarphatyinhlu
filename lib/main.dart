@@ -5,6 +5,8 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:kabyarphatyinhlu/Methods/app_theme.dart';
+import 'package:kabyarphatyinhlu/Methods/app_theme_dark.dart';
 import 'package:kabyarphatyinhlu/Methods/popup_player.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen.dart';
@@ -51,7 +53,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      themeMode: ThemeMode.light,
       theme: appTheme(),
+      darkTheme: appThemeDark(),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
       routes: {
@@ -390,7 +394,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
 
     return AdvancedDrawer(
       controller: _advancedDrawerController,
-      backdropColor: Colors.blue[50],
+      backdropColor: Theme.of(context).brightness == Brightness.dark
+          ? Theme.of(context).primaryColor
+          : Colors.blue[50],
       childDecoration: const BoxDecoration(
         // NOTICE: Uncomment if you want to add shadow behind the page.
         // Keep in mind that it may cause animation jerks.
@@ -406,7 +412,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
         child: SizedBox(
           width: double.infinity,
           child: ListTileTheme(
-            textColor: Colors.black,
+            textColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
             iconColor: Colors.red,
             style: ListTileStyle.drawer,
             child: Column(
@@ -438,7 +446,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                   ),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    // go to /home
+                    Navigator.pushNamed(context, '/');
+                  },
                   leading: const Icon(
                     Icons.home,
                     size: 30,
@@ -470,15 +481,18 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                     ),
                   ),
                 ),
+                Expanded(child: Container()),
                 Container(
                   margin: const EdgeInsets.only(top: 50),
                   child: Column(
                     children: [
                       Container(
-                        child: const Icon(
+                        child: Icon(
                           Icons.dark_mode,
                           size: 40,
-                          color: Colors.black54,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
                         ),
                       ),
                       Switch(
@@ -498,9 +512,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                     margin: const EdgeInsets.symmetric(
                       vertical: 16.0,
                     ),
-                    child: const Text(
+                    child: Text(
                       '© 2022 Nwayookabyar. All rights reserved.',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
                 ),
@@ -511,6 +525,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
       ),
       child: Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             // Here we take the value from the MyHomePage object that was created by
             // the App.build method, and use it to set our appbar title.
             title: Row(
@@ -532,7 +547,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                   ),
                 ),
                 Material(
-                  color: Colors.white,
+                  color: Theme.of(context).appBarTheme.backgroundColor,
                   borderRadius: const BorderRadius.all(Radius.circular(50)),
                   child: InkWell(
                     onTap: () {
@@ -543,8 +558,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                     child: Container(
                       width: 40,
                       height: 40,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: const Icon(Icons.search_rounded, size: 30),
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.transparent),
+                      child: const Icon(
+                        Icons.search_rounded,
+                        size: 30,
+                      ),
                     ),
                   ),
                 ),
@@ -552,8 +571,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
             ),
             bottom: TabBar(
               controller: _tabController,
-              labelColor: Colors.red,
-              unselectedLabelColor: Colors.black,
+              // labelColor: Colors.red,
+              // unselectedLabelColor: Colors.black,
               indicatorColor: Colors.red,
               indicatorSize: TabBarIndicatorSize.label,
               indicatorWeight: 3.5,

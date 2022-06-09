@@ -31,7 +31,7 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: Theme.of(context).primaryColor,
         borderRadius: const BorderRadius.all(Radius.circular(25)),
       ),
       margin: const EdgeInsets.only(bottom: 20, right: 20, left: 20),

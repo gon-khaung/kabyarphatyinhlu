@@ -88,7 +88,8 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                           child: Text(
                             arguments.poet.description,
                             style: GoogleFonts.quicksand(
-                                fontSize: 14, color: Colors.black87),
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -156,7 +157,7 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: currentPoem.id == poemsByPoet[index].id
-                                  ? Colors.blue[50]
+                                  ? Theme.of(context).primaryColor
                                   : Colors.transparent,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(10),
@@ -188,20 +189,18 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                                     children: [
                                       Text(
                                         poemsByPoet[index].title,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
                                       ),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       Text(
                                         poemsByPoet[index].artist,
-                                        style: const TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 12,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall,
                                         maxLines: 1,
                                       ),
                                     ],

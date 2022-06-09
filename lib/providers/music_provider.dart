@@ -656,3 +656,8 @@ final currentSequenceStream = StreamProvider.autoDispose((ref) {
 
   return audioPlayer.sequenceStateStream;
 });
+
+final shuffleStream = StreamProvider.autoDispose<bool?>((ref) {
+  final audioPlayer = ref.watch(audioPlayerProvider);
+  return audioPlayer.shuffleModeEnabledStream;
+});

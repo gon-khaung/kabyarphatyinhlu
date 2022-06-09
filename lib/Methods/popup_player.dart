@@ -18,7 +18,7 @@ class _PopupPlayerState extends State<PopupPlayer> {
       child: SlidingUpPanel(
         backdropOpacity: 0.1,
         backdropEnabled: true,
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
         minHeight: 100,
         boxShadow: [
           BoxShadow(

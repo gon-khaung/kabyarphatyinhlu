@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-ThemeData appTheme() {
+ThemeData appThemeDark() {
   return ThemeData(
     // This is the theme of your application.
     //
@@ -11,36 +11,50 @@ ThemeData appTheme() {
     // or simply save your changes to "hot reload" in a Flutter IDE).
     // Notice that the counter didn't reset back to zero; the application
     // is not restarted.
-    primaryColor: Colors.blue[50],
-    brightness: Brightness.light,
+    brightness: Brightness.dark,
     primarySwatch: Colors.blue,
-    scaffoldBackgroundColor: Colors.white,
+    primaryColor: Color.fromARGB(255, 60, 59, 59),
+    scaffoldBackgroundColor: Color.fromARGB(255, 24, 24, 24),
     appBarTheme: const AppBarTheme(
       color: Colors.transparent,
       elevation: 0,
       toolbarTextStyle: TextStyle(
-        color: Colors.black,
+        color: Colors.white,
         fontSize: 20,
       ),
       titleTextStyle: TextStyle(
-        color: Colors.black,
+        color: Colors.white,
         fontSize: 20,
       ),
-      foregroundColor: Colors.black,
-    ),
-    tabBarTheme: const TabBarTheme(
-      labelColor: Colors.red,
-      unselectedLabelColor: Colors.black,
+      foregroundColor: Colors.white,
     ),
     textTheme: const TextTheme(
       titleLarge: TextStyle(
-        color: Colors.black,
+        color: Colors.white,
         fontSize: 14,
         fontWeight: FontWeight.bold,
       ),
       titleSmall: TextStyle(
-        color: Color.fromARGB(255, 50, 50, 50),
+        color: Color.fromARGB(255, 208, 207, 207),
         fontSize: 12,
+      ),
+    ),
+    iconTheme: const IconThemeData(
+      color: Colors.white,
+    ),
+    tabBarTheme: const TabBarTheme(
+      labelColor: Colors.red,
+      unselectedLabelColor: Color.fromARGB(255, 208, 207, 207),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      hintStyle: TextStyle(
+        color: Colors.white,
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(
+          width: 10,
+          color: Colors.white,
+        ),
       ),
     ),
   );
