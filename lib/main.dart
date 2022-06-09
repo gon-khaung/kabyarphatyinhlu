@@ -9,6 +9,7 @@ import 'package:kabyarphatyinhlu/Methods/app_theme.dart';
 import 'package:kabyarphatyinhlu/Methods/app_theme_dark.dart';
 import 'package:kabyarphatyinhlu/Methods/popup_player.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
+import 'package:kabyarphatyinhlu/Screens/how_to.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen.dart';
 import 'package:kabyarphatyinhlu/Screens/search_screen.dart';
 import 'package:kabyarphatyinhlu/Widgets/favorite_list.dart';
@@ -16,6 +17,7 @@ import 'package:kabyarphatyinhlu/Widgets/poem_list.dart';
 import 'package:kabyarphatyinhlu/Widgets/poet_list.dart';
 import 'package:kabyarphatyinhlu/providers/favorite_provider.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
+import 'package:kabyarphatyinhlu/providers/theme_provider.dart';
 
 import 'Methods/app_theme.dart';
 
@@ -27,18 +29,19 @@ Future<void> main() async {
   FlutterNativeSplash.remove();
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
   @override
   void initState() {
     super.initState();
+    ref.read(themeProvider);
     _removeSplashScreen();
   }
 
@@ -51,9 +54,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeMode = ref.watch(themeProvider);
     return MaterialApp(
       title: 'Flutter Demo',
-      themeMode: ThemeMode.light,
+      themeMode: themeMode,
       theme: appTheme(),
       darkTheme: appThemeDark(),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -66,6 +70,7 @@ class _MyAppState extends State<MyApp> {
         PoetScreen.routeName: (context) => const PoetScreen(),
 
         '/search': (context) => const SearchScreen(),
+        '/how_to': (context) => const HowTo(),
       },
       initialRoute: '/',
     );
@@ -472,10 +477,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                 //   ),
                 // ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/how_to');
+                  },
                   leading: const Icon(Icons.favorite),
                   title: const Text(
-                    'How to',
+                    'How to ?',
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -487,17 +494,22 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                   child: Column(
                     children: [
                       Container(
-                        child: Icon(
-                          Icons.dark_mode,
-                          size: 40,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.black,
+                        child: InkWell(
+                          onTap: () {
+                            final theme = ref.read(themeProvider.notifier);
+                            theme.setTheme();
+                          },
+                          child: Icon(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Icons.light_mode_rounded
+                                : Icons.dark_mode_rounded,
+                            size: 40,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          ),
                         ),
-                      ),
-                      Switch(
-                        value: false,
-                        onChanged: (value) {},
                       ),
                     ],
                   ),

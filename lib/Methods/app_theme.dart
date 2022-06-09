@@ -16,7 +16,7 @@ ThemeData appTheme() {
     primarySwatch: Colors.blue,
     scaffoldBackgroundColor: Colors.white,
     appBarTheme: const AppBarTheme(
-      color: Colors.transparent,
+      color: Colors.white,
       elevation: 0,
       toolbarTextStyle: TextStyle(
         color: Colors.black,
