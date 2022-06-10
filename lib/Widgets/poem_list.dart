@@ -132,7 +132,7 @@ class _PoemListState extends ConsumerState<PoemList> {
                                 );
 
                                 if (audioPlayer.playing) {
-                                  audioPlayer.stop();
+                                  if (currentIndex == index) audioPlayer.stop();
                                 } else {
                                   audioPlayer.play();
                                 }
@@ -414,19 +414,26 @@ class PlayList extends ConsumerWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
+                            // final currentIndex =
+                            //     ref.watch(currentMusicIndex).value ?? 0;
+                            final currentSequence =
+                                ref.watch(currentSequenceStream).value;
+
                             audioPlayer.seek(
                               Duration.zero,
                               index: index,
                             );
 
                             if (audioPlayer.playing) {
-                              audioPlayer.stop();
+                              if (currentIndex == index) {
+                                audioPlayer.stop();
+                              }
                             } else {
                               audioPlayer.play();
                             }
                           },
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
+                              const BorderRadius.all(Radius.circular(0)),
                           child: Container(
                             width: 60,
                             height: 60,
@@ -443,7 +450,7 @@ class PlayList extends ConsumerWidget {
                                             ? Icons.pause_rounded
                                             : Icons.play_arrow_rounded
                                         : Icons.play_arrow_rounded,
-                                    size: 27);
+                                    size: 10);
                               },
                             ),
                           ),

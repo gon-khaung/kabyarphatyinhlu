@@ -98,7 +98,10 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                         Container(
                           padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
-                            color: Colors.red[50],
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.red[50],
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
                             ),
@@ -145,7 +148,6 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            print(currentPoemIndex);
                             currentPoem != poemsByPoet[index]
                                 ? audioPlayer.seek(
                                     Duration.zero,
@@ -213,13 +215,18 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
+                                      final currentPlaying =
+                                          playlists.asData!.value[currentIndex];
+                                      final getIndexInCurrentPlaylist =
+                                          poemsByPoet.indexOf(currentPlaying);
                                       audioPlayer.seek(
                                         Duration.zero,
                                         index: currentPoemIndex,
                                       );
 
                                       if (audioPlayer.playing) {
-                                        audioPlayer.stop();
+                                        if (index == getIndexInCurrentPlaylist)
+                                          audioPlayer.stop();
                                       } else {
                                         audioPlayer.play();
                                       }

@@ -50,7 +50,7 @@ class FavoriteList extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: currentPoet.id == playlist[index].id
-                          ? Colors.blue[50]
+                          ? Theme.of(context).primaryColor
                           : Colors.transparent,
                       borderRadius: const BorderRadius.all(
                         Radius.circular(10),
@@ -80,20 +80,14 @@ class FavoriteList extends StatelessWidget {
                             children: [
                               Text(
                                 playlist[index].title,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
                               Text(
                                 playlist[index].artist,
-                                style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 12,
-                                ),
+                                style: Theme.of(context).textTheme.titleSmall,
                                 maxLines: 1,
                               ),
                             ],
@@ -107,15 +101,20 @@ class FavoriteList extends StatelessWidget {
                           child: InkWell(
                             onTap: () {
                               var currentPlaying = playlist[index];
+
                               final getIndexOfMusic = mainPlaylist.asData!.value
                                   .indexOf(currentPlaying);
+                              final getIndexInCurrentPlaylist =
+                                  playlist.indexOf(
+                                      mainPlaylist.asData!.value[currentIndex]);
                               audioPlayer.seek(
                                 Duration.zero,
                                 index: getIndexOfMusic,
                               );
 
                               if (audioPlayer.playing) {
-                                audioPlayer.stop();
+                                if (getIndexInCurrentPlaylist == index)
+                                  audioPlayer.stop();
                               } else {
                                 audioPlayer.play();
                               }

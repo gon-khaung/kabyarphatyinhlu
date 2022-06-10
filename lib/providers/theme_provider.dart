@@ -12,7 +12,7 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
   }
 
   void _init() {
-    final int? themeInt = GetStorage('theme').read<int>('theme');
+    final int? themeInt = GetStorage('favorite').read<int>('theme');
     // state = themeInt.playlist.map((m) {
     //   play.add(Music.fromJson(m));
     //   return Music.fromJson(m);
@@ -22,6 +22,6 @@ class ThemeNotifier extends StateNotifier<ThemeMode> {
 
   void setTheme() {
     state = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-    GetStorage('theme').write('theme', state.index);
+    GetStorage('favorite').write('theme', state.index);
   }
 }
