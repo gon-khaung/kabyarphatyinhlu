@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
@@ -131,11 +132,36 @@ class _PoemListState extends ConsumerState<PoemList> {
                                   index: index,
                                 );
 
-                                if (audioPlayer.playing) {
-                                  if (currentIndex == index) audioPlayer.stop();
-                                } else {
-                                  audioPlayer.play();
-                                }
+                                // Ads
+                                RewardedAd.load(
+                                  adUnitId:
+                                      'ca-app-pub-3940256099942544/5224354917',
+                                  request: AdRequest(),
+                                  rewardedAdLoadCallback:
+                                      RewardedAdLoadCallback(
+                                    onAdLoaded: (RewardedAd ad) {
+                                      print('$ad loaded.');
+                                      // Keep a reference to the ad so you can show it later.
+                                      // this._rewardedAd = ad;
+                                      if (audioPlayer.playing) {
+                                        if (currentIndex == index)
+                                          audioPlayer.stop();
+                                      } else {
+                                        audioPlayer.play();
+                                      }
+                                    },
+                                    onAdFailedToLoad: (LoadAdError error) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "You need to watch to listen poems",
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
                               },
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(50)),

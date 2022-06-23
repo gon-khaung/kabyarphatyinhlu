@@ -18,13 +18,16 @@ import 'package:kabyarphatyinhlu/Widgets/poet_list.dart';
 import 'package:kabyarphatyinhlu/providers/favorite_provider.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 import 'package:kabyarphatyinhlu/providers/theme_provider.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'Methods/app_theme.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await GetStorage.init('favorite');
+
   runApp(const ProviderScope(child: MyApp()));
   FlutterNativeSplash.remove();
 }
