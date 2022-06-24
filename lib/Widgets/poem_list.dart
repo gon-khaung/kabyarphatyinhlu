@@ -18,12 +18,19 @@ class PoemList extends ConsumerStatefulWidget {
 class _PoemListState extends ConsumerState<PoemList> {
   // late AsyncValue<List<Music>> playlist;
 
+  // late RewardedAd mRewardedAd;
+  bool _isRewardedAdReady = false;
+  final bool _isUserClick = false;
+
+  RewardedAd? _rewardedAd;
+
   @override
   void initState() {
     super.initState();
     ref.read(audioPlayerProvider);
     ref.read(playlistProvider);
     // _addMusicToList();
+    _loadRewardedAd();
   }
 
   // void _addMusicToList() {
@@ -36,10 +43,91 @@ class _PoemListState extends ConsumerState<PoemList> {
   //   });
   // }
 
+  // AD
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: "ca-app-pub-3940256099942544/5224354917",
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) {
+        _rewardedAd = ad;
+        ad.fullScreenContentCallback =
+            FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+          setState(() {
+            _isRewardedAdReady = false;
+          });
+          _loadRewardedAd();
+        });
+        setState(() {
+          _isRewardedAdReady = true;
+        });
+      }, onAdFailedToLoad: (error) {
+        print('Failed to load a rewarded ad: ${error.message}');
+        setState(() {
+          _isRewardedAdReady = false;
+        });
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final audioPlayer = ref.watch(audioPlayerProvider);
     final playlist = ref.watch(playlistProvider);
+
+    // mRewardedAd.fullScreenContentCallback = FullScreenContentCallback(
+    //   onAdShowedFullScreenContent: (RewardedAd ad) =>
+    //       print('$ad onAdShowedFullScreenContent.'),
+    //   onAdDismissedFullScreenContent: (RewardedAd ad) {
+    //     print('$ad onAdDismissedFullScreenContent.');
+    //     ad.dispose();
+    //   },
+    //   onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+    //     print('$ad onAdFailedToShowFullScreenContent: $error');
+    //     ad.dispose();
+    //   },
+    //   onAdImpression: (RewardedAd ad) => print('$ad impression occurred.'),
+    // );
+
+    // mRewardedAd.show(
+    //     onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+    //   // Reward the user for watching an ad.
+    // });
+
+    // if (_isRewardedAdReady) {
+    //   return ElevatedButton(
+    //     onPressed: () {
+    //       showDialog(
+    //         context: context,
+    //         builder: (context) {
+    //           return AlertDialog(
+    //             title: const Text('Need a hint?'),
+    //             content: const Text('Watch an Ad to get a hint!'),
+    //             actions: [
+    //               TextButton(
+    //                 child: Text('cancel'.toUpperCase()),
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                 },
+    //               ),
+    //               TextButton(
+    //                 child: Text('ok'.toUpperCase()),
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                   _rewardedAd?.show(
+    //                     onUserEarnedReward: (_, reward) {
+    //                       // QuizManager.instance.useHint();
+    //                     },
+    //                   );
+    //                 },
+    //               ),
+    //             ],
+    //           );
+    //         },
+    //       );
+    //     },
+    //     child: const Text("hint"),
+    //   );
+    // }
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -88,6 +176,8 @@ class _PoemListState extends ConsumerState<PoemList> {
                           horizontal: 10, vertical: 5),
                       child: Row(
                         children: [
+                          if (_isUserClick)
+                            const Center(child: CircularProgressIndicator()),
                           SizedBox(
                             width: 50,
                             height: 50,
@@ -132,36 +222,67 @@ class _PoemListState extends ConsumerState<PoemList> {
                                   index: index,
                                 );
 
-                                // Ads
-                                RewardedAd.load(
-                                  adUnitId:
-                                      'ca-app-pub-3940256099942544/5224354917',
-                                  request: AdRequest(),
-                                  rewardedAdLoadCallback:
-                                      RewardedAdLoadCallback(
-                                    onAdLoaded: (RewardedAd ad) {
-                                      print('$ad loaded.');
-                                      // Keep a reference to the ad so you can show it later.
-                                      // this._rewardedAd = ad;
-                                      if (audioPlayer.playing) {
-                                        if (currentIndex == index)
-                                          audioPlayer.stop();
-                                      } else {
+                                // if (_isRewardedAdReady) {
+                                //   _rewardedAd?.show(
+                                //     onUserEarnedReward: (_, reward) {
+                                // QuizManager.instance.useHint();
+                                if (audioPlayer.playing) {
+                                  if (currentIndex == index) {
+                                    audioPlayer.stop();
+                                  }
+                                } else {
+                                  setState(() {
+                                    _isUserClick:
+                                    true;
+                                  });
+                                  if (_isRewardedAdReady) {
+                                    _rewardedAd?.show(
+                                      onUserEarnedReward: (_, reward) {
                                         audioPlayer.play();
-                                      }
-                                    },
-                                    onAdFailedToLoad: (LoadAdError error) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            "You need to watch to listen poems",
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
+                                        setState(() {
+                                          _isUserClick:
+                                          true;
+                                        });
+                                      },
+                                    );
+                                  }
+                                }
+                                //     },
+                                //   );
+                                // }
+
+                                // // Ads
+                                // RewardedAd.load(
+                                //   adUnitId:
+                                //       'ca-app-pub-3940256099942544/5224354917',
+                                //   request: const AdRequest(),
+                                //   rewardedAdLoadCallback:
+                                //       RewardedAdLoadCallback(
+                                //     onAdLoaded: (RewardedAd ad) {
+                                //       print('$ad loaded.');
+                                //       // Keep a reference to the ad so you can show it later.
+                                //       // this._rewardedAd = ad;
+                                //       // ad.show(
+                                //       //   onUserEarnedReward: ((ad, reward) {
+                                //       //     print(ad.responseInfo);
+                                //       //   }),
+                                //       // );
+
+                                //       // this._rew
+
+                                //     },
+                                //     onAdFailedToLoad: (LoadAdError error) {
+                                //       ScaffoldMessenger.of(context)
+                                //           .showSnackBar(
+                                //         const SnackBar(
+                                //           content: Text(
+                                //             "You need to watch to listen poems",
+                                //           ),
+                                //         ),
+                                //       );
+                                //     },
+                                //   ),
+                                // );
                               },
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(50)),
