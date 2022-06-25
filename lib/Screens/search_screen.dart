@@ -18,7 +18,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   // late RewardedAd mRewardedAd;
   bool _isRewardedAdReady = false;
-  bool _isUserClick = false;
+  final bool _isUserClick = false;
 
   RewardedAd? _rewardedAd;
 
@@ -87,7 +87,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   //   fontWeight: FontWeight.normal,
                   //   color: Colors.black,
                   // ),
-                  constraints: BoxConstraints(),
+                  constraints: const BoxConstraints(),
                   border: UnderlineInputBorder(
                     borderSide: BorderSide(
                       width: 2,
@@ -95,7 +95,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                   ),
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     vertical: 8,
                   ),
                   focusedBorder: UnderlineInputBorder(
@@ -196,7 +196,30 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                   ? audioPlayer.seek(Duration.zero,
                                       index: getIndexOfMusic)
                                   : null;
+
+                              if (currentPoem.id != currentPlaying.id) {
+                                if (audioPlayer.playing) {
+                                  _rewardedAd!.show(
+                                      onUserEarnedReward: (_, reward) {
+                                    audioPlayer.seek(
+                                      Duration.zero,
+                                      index: getIndexOfMusic,
+                                    );
+                                  });
+                                } else {
+                                  audioPlayer.seek(
+                                    Duration.zero,
+                                    index: getIndexOfMusic,
+                                  );
+                                }
+                              } else {
+                                audioPlayer.seek(
+                                  Duration.zero,
+                                  index: getIndexOfMusic,
+                                );
+                              }
                             }
+
                             // audioPlayer.play();
                           },
                           child: Container(
@@ -269,31 +292,48 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                         index: getIndexOfMusic,
                                       );
 
-                                      // if (audioPlayer.playing) {
-                                      //   audioPlayer.stop();
-                                      // } else {
-                                      //   audioPlayer.play();
-                                      // }
-
                                       if (audioPlayer.playing) {
-                                        if (getIndexOfMusic == index) {
+                                        if (currentPoem.id ==
+                                            currentPlaying.id) {
                                           audioPlayer.stop();
-                                        } else if (_isRewardedAdReady) {
-                                          _rewardedAd?.show(
-                                            onUserEarnedReward: (_, reward) {
-                                              audioPlayer.play();
-                                            },
-                                          );
+                                        } else {
+                                          _rewardedAd!.show(
+                                              onUserEarnedReward: (_, reward) {
+                                            audioPlayer.play();
+                                          });
                                         }
                                       } else {
-                                        if (_isRewardedAdReady) {
-                                          _rewardedAd?.show(
+                                        _rewardedAd!.show(
                                             onUserEarnedReward: (_, reward) {
-                                              audioPlayer.play();
-                                            },
-                                          );
-                                        }
+                                          audioPlayer.play();
+                                        });
                                       }
+
+                                      // if (currentPoem.id == currentPlaying.id) {
+                                      //   if (audioPlayer.playing) {
+                                      //     audioPlayer.stop();
+                                      //   } else {
+                                      //     _rewardedAd!.show(
+                                      //         onUserEarnedReward: (_, reward) {
+                                      //       audioPlayer.play();
+                                      //     });
+                                      //   }
+                                      // } else {
+                                      //   if (currentPoem.id ==
+                                      //       currentPlaying.id) {
+                                      //     audioPlayer.stop();
+                                      //   } else {
+                                      //     if (audioPlayer.playing) {
+                                      //       audioPlayer.stop();
+                                      //     } else {
+                                      //       _rewardedAd!.show(
+                                      //           onUserEarnedReward:
+                                      //               (_, reward) {
+                                      //         audioPlayer.play();
+                                      //       });
+                                      //     }
+                                      //   }
+                                      // }
                                     },
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(50)),

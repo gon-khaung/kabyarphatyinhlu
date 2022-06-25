@@ -21,7 +21,7 @@ class _PoemListState extends ConsumerState<PoemList> {
 
   // late RewardedAd mRewardedAd;
   bool _isRewardedAdReady = false;
-  bool _isUserClick = false;
+  final bool _isUserClick = false;
 
   RewardedAd? _rewardedAd;
 
@@ -158,10 +158,28 @@ class _PoemListState extends ConsumerState<PoemList> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      currentPoem != value[index]
-                          ? audioPlayer.seek(Duration.zero, index: index)
-                          : null;
+                      // currentPoem != value[index]
+                      //     ? audioPlayer.seek(Duration.zero, index: index)
+                      //     : null;
                       // audioPlayer.play();
+
+                      if (audioPlayer.playing) {
+                        if (currentPoem != value[index]) {
+                          _rewardedAd?.show(
+                            onUserEarnedReward: (_, reward) {
+                              audioPlayer.seek(Duration.zero, index: index);
+                            },
+                          );
+                        } else {
+                          if (currentPoem != index) {
+                            audioPlayer.seek(Duration.zero, index: index);
+                          }
+                        }
+                      } else {
+                        if (currentPoem != index) {
+                          audioPlayer.seek(Duration.zero, index: index);
+                        }
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
