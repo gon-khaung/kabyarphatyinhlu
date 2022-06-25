@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kabyarphatyinhlu/Methods/ad_helper.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
@@ -20,7 +21,7 @@ class _PoemListState extends ConsumerState<PoemList> {
 
   // late RewardedAd mRewardedAd;
   bool _isRewardedAdReady = false;
-  final bool _isUserClick = false;
+  bool _isUserClick = false;
 
   RewardedAd? _rewardedAd;
 
@@ -46,7 +47,7 @@ class _PoemListState extends ConsumerState<PoemList> {
   // AD
   void _loadRewardedAd() {
     RewardedAd.load(
-      adUnitId: "ca-app-pub-3940256099942544/5224354917",
+      adUnitId: AdHelper.rewardUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) {
         _rewardedAd = ad;
@@ -217,32 +218,29 @@ class _PoemListState extends ConsumerState<PoemList> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                audioPlayer.seek(
-                                  Duration.zero,
-                                  index: index,
-                                );
-
                                 // if (_isRewardedAdReady) {
                                 //   _rewardedAd?.show(
                                 //     onUserEarnedReward: (_, reward) {
                                 // QuizManager.instance.useHint();
+                                audioPlayer.seek(
+                                  Duration.zero,
+                                  index: index,
+                                );
                                 if (audioPlayer.playing) {
                                   if (currentIndex == index) {
                                     audioPlayer.stop();
+                                  } else if (_isRewardedAdReady) {
+                                    _rewardedAd?.show(
+                                      onUserEarnedReward: (_, reward) {
+                                        audioPlayer.play();
+                                      },
+                                    );
                                   }
                                 } else {
-                                  setState(() {
-                                    _isUserClick:
-                                    true;
-                                  });
                                   if (_isRewardedAdReady) {
                                     _rewardedAd?.show(
                                       onUserEarnedReward: (_, reward) {
                                         audioPlayer.play();
-                                        setState(() {
-                                          _isUserClick:
-                                          true;
-                                        });
                                       },
                                     );
                                   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kabyarphatyinhlu/Methods/ad_helper.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
@@ -13,10 +15,46 @@ class CollapsedBottomWidget extends ConsumerStatefulWidget {
 }
 
 class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
+  // late RewardedAd mRewardedAd;
+  bool _isRewardedAdReady = false;
+  bool _isUserClick = false;
+
+  RewardedAd? _rewardedAd;
+
   @override
   void initState() {
     super.initState();
     ref.read(audioPlayerProvider);
+    _loadRewardedAd();
+  }
+
+  // AD
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdHelper.rewardUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewardedAd = ad;
+          ad.fullScreenContentCallback =
+              FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+            setState(() {
+              _isRewardedAdReady = false;
+            });
+            _loadRewardedAd();
+          });
+          setState(() {
+            _isRewardedAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (error) {
+          print('Failed to load a rewarded ad: ${error.message}');
+          setState(() {
+            _isRewardedAdReady = false;
+          });
+        },
+      ),
+    );
   }
 
   @override
@@ -60,7 +98,15 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  audioPlayer.seekToPrevious();
+                  audioPlayer.stop();
+                  if (_isRewardedAdReady) {
+                    _rewardedAd?.show(
+                      onUserEarnedReward: (_, reward) {
+                        audioPlayer.seekToPrevious();
+                        audioPlayer.play();
+                      },
+                    );
+                  }
                 },
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
                 child: Container(
@@ -88,10 +134,28 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
                 ),
                 child: InkWell(
                   onTap: () {
+                    // if (audioPlayer.playing) {
+                    //   audioPlayer.pause();
+                    // } else {
+                    //   audioPlayer.play();
+                    // }
+
                     if (audioPlayer.playing) {
-                      audioPlayer.pause();
+                      audioPlayer.stop();
                     } else {
-                      audioPlayer.play();
+                      setState(() {
+                        _isUserClick = true;
+                      });
+                      if (_isRewardedAdReady) {
+                        _rewardedAd?.show(
+                          onUserEarnedReward: (_, reward) {
+                            audioPlayer.play();
+                            setState(() {
+                              _isUserClick = false;
+                            });
+                          },
+                        );
+                      }
                     }
                   },
                   borderRadius: const BorderRadius.all(Radius.circular(15)),
@@ -124,7 +188,15 @@ class _CollapsedBottomWidgetState extends ConsumerState<CollapsedBottomWidget> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  audioPlayer.seekToNext();
+                  audioPlayer.stop();
+                  if (_isRewardedAdReady) {
+                    _rewardedAd?.show(
+                      onUserEarnedReward: (_, reward) {
+                        audioPlayer.seekToNext();
+                        audioPlayer.play();
+                      },
+                    );
+                  }
                 },
                 borderRadius: const BorderRadius.all(Radius.circular(50)),
                 child: Container(

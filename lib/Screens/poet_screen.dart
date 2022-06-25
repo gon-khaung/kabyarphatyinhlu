@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kabyarphatyinhlu/Methods/ad_helper.dart';
 import 'package:kabyarphatyinhlu/Methods/popup_player.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/Screens/poet_screen_arguments.dart';
@@ -15,6 +17,44 @@ class PoetScreen extends ConsumerStatefulWidget {
 }
 
 class _PoetScreenState extends ConsumerState<PoetScreen> {
+  // late RewardedAd mRewardedAd;
+  bool _isRewardedAdReady = false;
+  bool _isUserClick = false;
+
+  RewardedAd? _rewardedAd;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRewardedAd();
+  }
+
+  // AD
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdHelper.rewardUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) {
+        _rewardedAd = ad;
+        ad.fullScreenContentCallback =
+            FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+          setState(() {
+            _isRewardedAdReady = false;
+          });
+          _loadRewardedAd();
+        });
+        setState(() {
+          _isRewardedAdReady = true;
+        });
+      }, onAdFailedToLoad: (error) {
+        print('Failed to load a rewarded ad: ${error.message}');
+        setState(() {
+          _isRewardedAdReady = false;
+        });
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final arguments =
@@ -224,11 +264,32 @@ class _PoetScreenState extends ConsumerState<PoetScreen> {
                                         index: currentPoemIndex,
                                       );
 
+                                      // if (audioPlayer.playing) {
+                                      //   if (index == getIndexInCurrentPlaylist)
+                                      //     audioPlayer.stop();
+                                      // } else {
+                                      //   audioPlayer.play();
+                                      // }
+
                                       if (audioPlayer.playing) {
-                                        if (index == getIndexInCurrentPlaylist)
+                                        if (getIndexInCurrentPlaylist ==
+                                            index) {
                                           audioPlayer.stop();
+                                        } else if (_isRewardedAdReady) {
+                                          _rewardedAd?.show(
+                                            onUserEarnedReward: (_, reward) {
+                                              audioPlayer.play();
+                                            },
+                                          );
+                                        }
                                       } else {
-                                        audioPlayer.play();
+                                        if (_isRewardedAdReady) {
+                                          _rewardedAd?.show(
+                                            onUserEarnedReward: (_, reward) {
+                                              audioPlayer.play();
+                                            },
+                                          );
+                                        }
                                       }
                                     },
                                     borderRadius: const BorderRadius.all(

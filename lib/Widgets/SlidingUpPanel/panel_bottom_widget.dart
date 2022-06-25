@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:kabyarphatyinhlu/Methods/ad_helper.dart';
 import 'package:kabyarphatyinhlu/Methods/colors.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/providers/favorite_provider.dart';
@@ -20,11 +22,18 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
   late bool isPlaying;
   late List<Music> musics = [];
 
+  bool _isRewardedAdReady = false;
+  bool _isUserClick = false;
+
+  RewardedAd? _rewardedAd;
+
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
     ref.read(audioPlayerProvider);
+
+    _loadRewardedAd();
 
     // state.listen((value) {
     //   if (value is LoadedMusic) {
@@ -72,6 +81,32 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
   }
 
   void toggleMusicStatus() {}
+
+  // AD
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdHelper.rewardUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) {
+        _rewardedAd = ad;
+        ad.fullScreenContentCallback =
+            FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+          setState(() {
+            _isRewardedAdReady = false;
+          });
+          _loadRewardedAd();
+        });
+        setState(() {
+          _isRewardedAdReady = true;
+        });
+      }, onAdFailedToLoad: (error) {
+        print('Failed to load a rewarded ad: ${error.message}');
+        setState(() {
+          _isRewardedAdReady = false;
+        });
+      }),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -366,8 +401,18 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        audioPlayer.seekToPrevious();
+                        // audioPlayer.seekToPrevious();
                         // _pageManager.previous();
+                        audioPlayer.stop();
+
+                        if (_isRewardedAdReady) {
+                          _rewardedAd?.show(
+                            onUserEarnedReward: (_, reward) {
+                              audioPlayer.seekToPrevious();
+                              audioPlayer.play();
+                            },
+                          );
+                        }
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(
@@ -405,10 +450,23 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                             // } else {
                             //   _audioPlayer.play();
                             // }
+                            // if (audioPlayer.playing) {
+                            //   audioPlayer.pause();
+                            // } else {
+                            //   audioPlayer.play();
+                            // }
+
+                            // AD
                             if (audioPlayer.playing) {
-                              audioPlayer.pause();
+                              audioPlayer.stop();
                             } else {
-                              audioPlayer.play();
+                              if (_isRewardedAdReady) {
+                                _rewardedAd?.show(
+                                  onUserEarnedReward: (_, reward) {
+                                    audioPlayer.play();
+                                  },
+                                );
+                              }
                             }
                           },
                           borderRadius:
@@ -452,7 +510,17 @@ class _PanelBottomWidgetState extends ConsumerState<PanelBottomWidget> {
                     child: InkWell(
                       onTap: () {
                         // _audioPlayer.seekToNext();
-                        audioPlayer.seekToNext();
+                        // audioPlayer.seekToNext();
+                        audioPlayer.stop();
+
+                        if (_isRewardedAdReady) {
+                          _rewardedAd?.show(
+                            onUserEarnedReward: (_, reward) {
+                              audioPlayer.seekToNext();
+                              audioPlayer.play();
+                            },
+                          );
+                        }
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: Container(

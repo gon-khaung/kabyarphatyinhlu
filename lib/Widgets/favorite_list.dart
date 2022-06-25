@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:kabyarphatyinhlu/Methods/ad_helper.dart';
 import 'package:kabyarphatyinhlu/Models/music.dart';
 import 'package:kabyarphatyinhlu/providers/music_provider.dart';
 
-class FavoriteList extends StatelessWidget {
+class FavoriteList extends StatefulWidget {
   const FavoriteList({
     Key? key,
     required this.playlist,
@@ -13,6 +15,50 @@ class FavoriteList extends StatelessWidget {
 
   final List<Music> playlist;
   final AudioPlayer audioPlayer;
+
+  @override
+  State<FavoriteList> createState() => _FavoriteListState();
+}
+
+class _FavoriteListState extends State<FavoriteList> {
+  // late RewardedAd mRewardedAd;
+  bool _isRewardedAdReady = false;
+  bool _isUserClick = false;
+
+  RewardedAd? _rewardedAd;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadRewardedAd();
+  }
+
+  // AD
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdHelper.rewardUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) {
+        _rewardedAd = ad;
+        ad.fullScreenContentCallback =
+            FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+          setState(() {
+            _isRewardedAdReady = false;
+          });
+          _loadRewardedAd();
+        });
+        setState(() {
+          _isRewardedAdReady = true;
+        });
+      }, onAdFailedToLoad: (error) {
+        print('Failed to load a rewarded ad: ${error.message}');
+        setState(() {
+          _isRewardedAdReady = false;
+        });
+      }),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +77,26 @@ class FavoriteList extends StatelessWidget {
           final currentPoet = currentSequence!.currentSource!.tag as Music;
 
           return ListView.builder(
-            itemCount: playlist.length,
+            itemCount: widget.playlist.length,
             itemBuilder: (BuildContext context, int index) {
               return Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    var currentPlaying = playlist[index];
+                    var currentPlaying = widget.playlist[index];
                     final getIndexOfMusic =
                         mainPlaylist.asData!.value.indexOf(currentPlaying);
-                    audioPlayer.seek(
+                    widget.audioPlayer.seek(
                       Duration.zero,
                       index: getIndexOfMusic,
                     );
-                    audioPlayer.seek(Duration.zero, index: getIndexOfMusic);
+                    widget.audioPlayer
+                        .seek(Duration.zero, index: getIndexOfMusic);
                     // audioPlayer.play();
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: currentPoet.id == playlist[index].id
+                      color: currentPoet.id == widget.playlist[index].id
                           ? Theme.of(context).primaryColor
                           : Colors.transparent,
                       borderRadius: const BorderRadius.all(
@@ -67,7 +114,7 @@ class FavoriteList extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image(
-                              image: AssetImage(playlist[index].cover),
+                              image: AssetImage(widget.playlist[index].cover),
                             ),
                           ),
                         ),
@@ -79,14 +126,14 @@ class FavoriteList extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                playlist[index].title,
+                                widget.playlist[index].title,
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                playlist[index].artist,
+                                widget.playlist[index].artist,
                                 style: Theme.of(context).textTheme.titleSmall,
                                 maxLines: 1,
                               ),
@@ -100,23 +147,43 @@ class FavoriteList extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              var currentPlaying = playlist[index];
+                              var currentPlaying = widget.playlist[index];
 
                               final getIndexOfMusic = mainPlaylist.asData!.value
                                   .indexOf(currentPlaying);
-                              final getIndexInCurrentPlaylist =
-                                  playlist.indexOf(
+                              final getIndexInCurrentPlaylist = widget.playlist
+                                  .indexOf(
                                       mainPlaylist.asData!.value[currentIndex]);
-                              audioPlayer.seek(
+                              widget.audioPlayer.seek(
                                 Duration.zero,
                                 index: getIndexOfMusic,
                               );
 
-                              if (audioPlayer.playing) {
-                                if (getIndexInCurrentPlaylist == index)
-                                  audioPlayer.stop();
+                              // if (widget.audioPlayer.playing) {
+                              //   if (getIndexInCurrentPlaylist == index)
+                              //     widget.audioPlayer.stop();
+                              // } else {
+                              //   widget.audioPlayer.play();
+                              // }
+
+                              if (widget.audioPlayer.playing) {
+                                if (getIndexInCurrentPlaylist == index) {
+                                  widget.audioPlayer.stop();
+                                } else if (_isRewardedAdReady) {
+                                  _rewardedAd?.show(
+                                    onUserEarnedReward: (_, reward) {
+                                      widget.audioPlayer.play();
+                                    },
+                                  );
+                                }
                               } else {
-                                audioPlayer.play();
+                                if (_isRewardedAdReady) {
+                                  _rewardedAd?.show(
+                                    onUserEarnedReward: (_, reward) {
+                                      widget.audioPlayer.play();
+                                    },
+                                  );
+                                }
                               }
                             },
                             borderRadius:
@@ -130,7 +197,7 @@ class FavoriteList extends StatelessWidget {
                                 builder: (context, ref, child) {
                                   final playerState =
                                       ref.watch(audioPlayerState).value;
-                                  var currentPlaying = playlist[index];
+                                  var currentPlaying = widget.playlist[index];
                                   final getIndexOfMusic = mainPlaylist
                                       .asData!.value
                                       .indexOf(currentPlaying);
