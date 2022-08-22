@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class AdHelper {
   static String get bannerUnitId {
     // if (Platform.isAndroid) {
@@ -16,6 +14,6 @@ class AdHelper {
   }
 
   static String get rewardUnitId {
-    return "ca-app-pub-3940256099942544/5224354917";
+    return "ca-app-pub-7255154100943238/7560108786";
   }
 }
